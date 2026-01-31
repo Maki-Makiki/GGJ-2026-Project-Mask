@@ -39,6 +39,7 @@ public class ControllerManager : MonoBehaviour
                 Debug.Log($"[{gameObject.name}({gameObject.GetInstanceID()})] yo ya era el ControllerManager Me mato!");
             }
         }
+
         DiviceChangedFunction();
     }
 
