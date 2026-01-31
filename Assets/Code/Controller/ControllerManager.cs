@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class ControllerManager : MonoBehaviour
 {
+    public static ControllerManager state;
+
     public enum m_ImputDivice
     {
         Xbox,
@@ -20,7 +22,23 @@ public class ControllerManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        if (state == null)
+        {
+            Debug.Log($"[{gameObject.name}({gameObject.GetInstanceID()})] yo soy el ControllerManager, Admiren mi poder!");
+            state = this;
+        }
+        else
+        {
+            if(state != this)
+            {
+                Debug.Log($"[{gameObject.name}({gameObject.GetInstanceID()})] ya hay otro ControllerManager Me mato!");
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.Log($"[{gameObject.name}({gameObject.GetInstanceID()})] yo ya era el ControllerManager Me mato!");
+            }
+        }
         DiviceChangedFunction();
     }
 
