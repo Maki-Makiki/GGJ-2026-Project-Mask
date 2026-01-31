@@ -1,0 +1,137 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 256a7c7e85be3de49a2730677ff67239, type: 3}
+  m_Name: InputList
+  m_EditorClassIdentifier: Assembly-CSharp::InputList
+  inputIconsSet:
+  - ImputName: Xbox
+    Buttons:
+    - path: start
+      sprite: {fileID: 21300000, guid: 93b43a53056ff45458136b0e4f7d82e2, type: 3}
+    - path: leftStick
+      sprite: {fileID: 21300000, guid: 604af43956675ad41865eb29160d7e53, type: 3}
+    - path: buttonNorth
+      sprite: {fileID: 21300000, guid: 5020781b5f266794ea1d9071649a5cee, type: 3}
+    - path: buttonSouth
+      sprite: {fileID: 21300000, guid: db06d5a83dbc92549afba9ad8845439b, type: 3}
+    - path: buttonWest
+      sprite: {fileID: 21300000, guid: 835a40fac8ac7db4e9244bdb62817bc5, type: 3}
+    - path: buttonEast
+      sprite: {fileID: 21300000, guid: 9c7ee160eac78ee4c8c95053d0307409, type: 3}
+    - path: up
+      sprite: {fileID: 21300000, guid: bc87911c4bce310409a1c0d3f34bc7ae, type: 3}
+    - path: down
+      sprite: {fileID: 21300000, guid: 9814fa602ebf92b499674ac4b6a95992, type: 3}
+    - path: left
+      sprite: {fileID: 21300000, guid: bae5f21224dd7b746844b46dac436bf9, type: 3}
+    - path: right
+      sprite: {fileID: 21300000, guid: f5d4e6f277b554941b723d4235bfe873, type: 3}
+  - ImputName: Playstation
+    Buttons:
+    - path: start
+      sprite: {fileID: 21300000, guid: ab0852f0aa8188e4eb6be0e9d3c2ba40, type: 3}
+    - path: leftStick
+      sprite: {fileID: 21300000, guid: ace6ef9b450e56844a9d0811890440fd, type: 3}
+    - path: buttonNorth
+      sprite: {fileID: 21300000, guid: b4755533d33f38d4697a983725b3c9a7, type: 3}
+    - path: buttonSouth
+      sprite: {fileID: 21300000, guid: 6b217b87e1e70f34ab29694016cbe22c, type: 3}
+    - path: buttonWest
+      sprite: {fileID: 21300000, guid: 4ec1271062ca7e745a2c6ce7d7bcc4f2, type: 3}
+    - path: buttonEast
+      sprite: {fileID: 21300000, guid: 72c92a44e55c7324b9b70270851281aa, type: 3}
+    - path: up
+      sprite: {fileID: 21300000, guid: d308a5b5e86546847a3500c4ffdb32a2, type: 3}
+    - path: down
+      sprite: {fileID: 21300000, guid: 8c16aeeb51047b84b9637ca7da718397, type: 3}
+    - path: left
+      sprite: {fileID: 21300000, guid: d89ea7c806885a149af4f235ca65f3d9, type: 3}
+    - path: right
+      sprite: {fileID: 21300000, guid: 390322613e4cd51449ee65f61f3863c9, type: 3}
+  - ImputName: Switch
+    Buttons:
+    - path: start
+      sprite: {fileID: 21300000, guid: 7a094cb236923dc47b4cee6684b9ba2a, type: 3}
+    - path: leftStick
+      sprite: {fileID: 21300000, guid: 4702ede2be82dcf449387605c0066755, type: 3}
+    - path: buttonNorth
+      sprite: {fileID: 21300000, guid: 6e1356c49e9c1e14e8eb86b41f2facb6, type: 3}
+    - path: buttonSouth
+      sprite: {fileID: 21300000, guid: fba519615f0583c438d864002d4216a9, type: 3}
+    - path: buttonWest
+      sprite: {fileID: 21300000, guid: 2746370e6d8874f4bb05667f02fcd541, type: 3}
+    - path: buttonEast
+      sprite: {fileID: 21300000, guid: a1156eb9bc68caf4a9a60f1d604f5954, type: 3}
+    - path: up
+      sprite: {fileID: 21300000, guid: a6c2fbd72093b5c4d93a9ba17b45e315, type: 3}
+    - path: down
+      sprite: {fileID: 21300000, guid: 41498c9e6895de34aa8a1f5e26471d62, type: 3}
+    - path: left
+      sprite: {fileID: 21300000, guid: 9166617ff1194d542a22f9e40a45d510, type: 3}
+    - path: right
+      sprite: {fileID: 21300000, guid: e708dee2d53700d45a270e701d2b5518, type: 3}
+  - ImputName: Gempad
+    Buttons:
+    - path: start
+      sprite: {fileID: 21300000, guid: 2367f6f63e81a604b81ed248ed59e13f, type: 3}
+    - path: leftStick
+      sprite: {fileID: 21300000, guid: 4702ede2be82dcf449387605c0066755, type: 3}
+    - path: buttonNorth
+      sprite: {fileID: 21300000, guid: 90a297447c92a434e9e78e6444c64f43, type: 3}
+    - path: buttonSouth
+      sprite: {fileID: 21300000, guid: 46881872e040c2a4da1768892ec501b8, type: 3}
+    - path: buttonWest
+      sprite: {fileID: 21300000, guid: 3aad714237c845d419158f1ced555ddd, type: 3}
+    - path: buttonEast
+      sprite: {fileID: 21300000, guid: 383d99ed499a0be46bc219681a9b3174, type: 3}
+    - path: up
+      sprite: {fileID: 21300000, guid: fd0f0b8900ee02342a7536183c893139, type: 3}
+    - path: down
+      sprite: {fileID: 21300000, guid: 192b1cb3526b5484d8d394423274e935, type: 3}
+    - path: left
+      sprite: {fileID: 21300000, guid: e70c2348929a1134e8fb1bb5c0957f70, type: 3}
+    - path: right
+      sprite: {fileID: 21300000, guid: 70ca765976c30754b8ba7cec921952f6, type: 3}
+  - ImputName: Keyboard
+    Buttons:
+    - path: escape
+      sprite: {fileID: 21300000, guid: f7b8c5615b4da1745b9dacff19a941e8, type: 3}
+    - path: enter
+      sprite: {fileID: 21300000, guid: dae09feebf88d7d49a37b5a99f7b443e, type: 3}
+    - path: space
+      sprite: {fileID: 21300000, guid: 5125168a9ab771347a6cf58a1c6065b2, type: 3}
+    - path: z
+      sprite: {fileID: 21300000, guid: b7014b05f2eb13345af405f1cae9f919, type: 3}
+    - path: x
+      sprite: {fileID: 21300000, guid: 91552328d8d8fe344b887f02e4bf086b, type: 3}
+    - path: buttonEast
+      sprite: {fileID: 21300000, guid: ecef280a68fc354489a0f882e71c5926, type: 3}
+    - path: n
+      sprite: {fileID: 21300000, guid: af86aa0cd83debc4c8ea28fc37f46ca3, type: 3}
+    - path: m
+      sprite: {fileID: 21300000, guid: 454e37b547ecf5c479071d03878b8e86, type: 3}
+    - path: w
+      sprite: {fileID: 21300000, guid: a2032dda0e64f6341b7ffefebc6e78a6, type: 3}
+    - path: a
+      sprite: {fileID: 21300000, guid: a97e544c48bbc9a468ca6d22314e0683, type: 3}
+    - path: s
+      sprite: {fileID: 21300000, guid: cf26f3034bee6284aa2f0e9f2fc139c2, type: 3}
+    - path: d
+      sprite: {fileID: 21300000, guid: 82e05ef282a54094682a4427033672d8, type: 3}
+    - path: upArrow
+      sprite: {fileID: 21300000, guid: 860d0f205e203bf44b06ea48d4921152, type: 3}
+    - path: downArrow
+      sprite: {fileID: 21300000, guid: 94015b94abfdd4144bf4771e6054747f, type: 3}
+    - path: leftArrow
+      sprite: {fileID: 21300000, guid: 1745796df585b614ea9133bbcfaba723, type: 3}
+    - path: rightArrow
+      sprite: {fileID: 21300000, guid: 9a141392618b2924a8751eecedb00de7, type: 3}
