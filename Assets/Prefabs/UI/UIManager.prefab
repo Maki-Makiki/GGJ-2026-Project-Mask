@@ -1053,6 +1053,7 @@ MonoBehaviour:
   mainMenu: {fileID: 2168833429818189588}
   settingsMenu: {fileID: 7224813429693213189}
   pauseMenu: {fileID: 3670624507257965496}
+  controlPrompt: {fileID: 2246343461047890655}
 --- !u!1 &2485781593302929494
 GameObject:
   m_ObjectHideFlags: 0

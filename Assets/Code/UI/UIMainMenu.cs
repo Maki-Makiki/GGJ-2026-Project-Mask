@@ -8,6 +8,7 @@ namespace Code.UI
         public void StartGame()
         {
             SceneManager.LoadScene(0);
+            UIManager.Instance.HideAll();
             Debug.Log("Start Game");
         }
 
