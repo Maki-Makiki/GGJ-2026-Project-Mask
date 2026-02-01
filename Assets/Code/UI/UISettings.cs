@@ -1,6 +1,17 @@
 using UnityEngine;
 
-public class UISettings
+namespace Code.UI
 {
+    public class UISettings : MonoBehaviour
+    {
+        public void Resolution()
+        {
+            Debug.Log("Resolution");
+        }
     
+        public void Volume()
+        {
+            Debug.Log("Volume");
+        }
+    }
 }

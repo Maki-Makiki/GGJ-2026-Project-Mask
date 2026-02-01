@@ -113,8 +113,6 @@ MonoBehaviour:
       sprite: {fileID: 21300000, guid: b7014b05f2eb13345af405f1cae9f919, type: 3}
     - path: x
       sprite: {fileID: 21300000, guid: 91552328d8d8fe344b887f02e4bf086b, type: 3}
-    - path: buttonEast
-      sprite: {fileID: 21300000, guid: ecef280a68fc354489a0f882e71c5926, type: 3}
     - path: n
       sprite: {fileID: 21300000, guid: af86aa0cd83debc4c8ea28fc37f46ca3, type: 3}
     - path: m

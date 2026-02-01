@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -18,10 +20,15 @@ public class ControllerManager : MonoBehaviour
     public PlayerInput playerImput;
 
     public InputList inputList;
+    public InputIconsSet currentIconSet;
+
+    public event Action OnDeviceChanged;
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        transform.parent = null;
         if (state == null)
         {
             Debug.Log($"[{gameObject.name}({gameObject.GetInstanceID()})] yo soy el ControllerManager, Admiren mi poder!");
@@ -46,18 +53,17 @@ public class ControllerManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     public void DiviceChangedFunction()
     {
-        if (playerImput == null) 
+        if (playerImput == null)
         {
-            playerImput = this.gameObject.GetComponent<PlayerInput>();
+            playerImput = gameObject.GetComponent<PlayerInput>();
         }
 
-        switch (playerImput.currentControlScheme.ToString())
-        {
+        switch (playerImput.currentControlScheme)
+        {   
             case "Xbox":
                 ImputDivece = m_ImputDivice.Xbox;
                 break;
@@ -75,6 +81,12 @@ public class ControllerManager : MonoBehaviour
                 break;
         }
 
-        //Check_MostrarControlesPantalla();
+        SetCurrentIconSet(ImputDivece);
+        OnDeviceChanged?.Invoke();
+    }
+
+    void SetCurrentIconSet(m_ImputDivice divece)
+    {
+        currentIconSet = inputList.inputIconsSet.FirstOrDefault(s => s.ImputName == divece.ToString());
     }
 }
