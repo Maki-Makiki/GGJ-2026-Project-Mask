@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class PlayerColliderAction : MonoBehaviour
 {
@@ -15,7 +16,15 @@ public class PlayerColliderAction : MonoBehaviour
         }
         else
         {
-            playerTeleport.RespawnPlayer();
+            Debug.Log("colision con " + Trigger.gameObject.name);
+            if (Trigger.gameObject.tag == "NextLevel")
+            {
+                SceneManager.LoadScene(Trigger.gameObject.name.Split(" | ")[1]);
+            }
+            else
+            {
+                playerTeleport.RespawnPlayer();
+            }
         }
        
     }

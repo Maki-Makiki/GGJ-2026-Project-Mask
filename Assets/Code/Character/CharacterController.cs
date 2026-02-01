@@ -5,7 +5,7 @@ public class CharacterController : MonoBehaviour, IPausable
 {
     [Space]
     [Header("Internal Values")]
-    [SerializeField] BoxCollider2D boxCollider2D;
+    [SerializeField] CapsuleCollider2D boxCollider2D;
     [SerializeField] Rigidbody2D rigidBody2D;
 
     [Space]
@@ -68,7 +68,7 @@ public class CharacterController : MonoBehaviour, IPausable
     void Start()
     {
         if(boxCollider2D == null)
-            boxCollider2D = this.gameObject.GetComponent<BoxCollider2D>();
+            boxCollider2D = this.gameObject.GetComponent<CapsuleCollider2D>();
 
         if (rigidBody2D == null)
             rigidBody2D = this.gameObject.GetComponent<Rigidbody2D>();
@@ -94,8 +94,9 @@ public class CharacterController : MonoBehaviour, IPausable
             inAir = true;
             CharacterAnimator.ResetTrigger(JumpEndTrigger);
         }
-           
     }
+
+    
 
     private void FixedUpdate()
     {
@@ -155,6 +156,14 @@ public class CharacterController : MonoBehaviour, IPausable
         float movement = speedDiff * accelRate;
 
         rigidBody2D.AddForce(Vector2.right * movement);
+
+        if(Mathf.Abs(rigidBody2D.linearVelocityX) < 0.2f && grounded && targetSpeed == 0f)
+        {
+            rigidBody2D.Sleep();
+        }
+
+        print(rigidBody2D.angularVelocity);
+
     }
 
 
@@ -202,8 +211,6 @@ public class CharacterController : MonoBehaviour, IPausable
         rigidBody2D.linearVelocity = v;
 
         rigidBody2D.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
-
-
     }
 
     private void CheckAttackInput()
@@ -241,18 +248,25 @@ public class CharacterController : MonoBehaviour, IPausable
     private void CheckGrounded()
     {
         Bounds bounds = boxCollider2D.bounds;
-
+        print(bounds.size);
         RaycastHit2D hit = Physics2D.BoxCast(
             bounds.center,
-            (bounds.size * groundHorizontalTolerance),
+            (new Vector2(bounds.size.x * groundHorizontalTolerance, bounds.size.y)),
             0f,
             Vector2.down,
             groundCheckDistance,
             groundLayer
         );
-
-        grounded = hit.collider != null && rigidBody2D.linearVelocity.y == 0 ;
+        print(rigidBody2D.linearVelocity);
+        grounded = hit.collider != null && Mathf.Abs(rigidBody2D.linearVelocity.y) < 2f;
         if (animate) CharacterAnimator.SetBool(GroundedBool, grounded);
+
+        Vector2 v = rigidBody2D.linearVelocity;
+
+        if (v.y > 0 && grounded)
+            v.y = 0f;
+
+        rigidBody2D.linearVelocity = v;
 
         if (inAir && grounded)
         {
