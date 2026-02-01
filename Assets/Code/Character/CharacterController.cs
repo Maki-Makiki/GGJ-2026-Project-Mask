@@ -46,6 +46,7 @@ public class CharacterController : MonoBehaviour
     [SerializeField] bool grounded = false;
     [SerializeField] bool paused = false;
     [SerializeField] bool AttackMaskEnable = false;
+    [SerializeField] bool flip = false;
 
     [Space]
     [Header("Animations")]
@@ -54,7 +55,10 @@ public class CharacterController : MonoBehaviour
     [SerializeField] string JumpStartTrigger = "T_JumpStart";
     [SerializeField] string JumpEndTrigger = "T_JumpEnd";
     [SerializeField] string WalkBool = "B_Walk";
+    [SerializeField] string FlipBool = "B_Flip";
+    [SerializeField] string GroundedBool = "B_Ground";
     [SerializeField] string AttackTrigger = "T_Attack";
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -78,7 +82,13 @@ public class CharacterController : MonoBehaviour
         CheckJumpInput();
         UpdateJumpTimers();
         TryConsumeJump();
-        
+
+        if (grounded == false)
+        {
+            inAir = true;
+            CharacterAnimator.ResetTrigger(JumpEndTrigger);
+        }
+           
     }
 
     private void FixedUpdate()
@@ -111,7 +121,14 @@ public class CharacterController : MonoBehaviour
             inputVector.x = inputVector.x == 0 ? 0 : Mathf.Sign(inputVector.x);
 
         if(animate)
-            CharacterAnimator.SetBool(WalkBool, (inputVector.x != 0) );  
+            CharacterAnimator.SetBool(WalkBool, (inputVector.x != 0) );
+
+        
+        if (inputVector.x != 0f)
+            flip = inputVector.x < 0;
+
+        if (animate)
+            CharacterAnimator.SetBool(FlipBool, flip);
     }
 
     public void MoveCharacter()
@@ -170,7 +187,7 @@ public class CharacterController : MonoBehaviour
     {
         if(animate)
             CharacterAnimator.SetTrigger(JumpStartTrigger);
-        inAir = true;
+        //
         Vector2 v = rigidBody2D.linearVelocity;
 
         if (v.y < 0f)
@@ -179,6 +196,8 @@ public class CharacterController : MonoBehaviour
         rigidBody2D.linearVelocity = v;
 
         rigidBody2D.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
+
+
     }
 
     private void CheckAttackInput()
@@ -187,7 +206,7 @@ public class CharacterController : MonoBehaviour
         {
             Debug.Log("Ataque!");
             CharacterAnimator.SetBool(WalkBool, false);
-            CharacterAnimator.SetTrigger(AttackAction);
+            CharacterAnimator.SetTrigger(AttackTrigger);
         }
     }
 
@@ -204,13 +223,14 @@ public class CharacterController : MonoBehaviour
             groundLayer
         );
 
-        grounded = hit.collider != null;
+        grounded = hit.collider != null && rigidBody2D.linearVelocity.y == 0 ;
+        if (animate) CharacterAnimator.SetBool(GroundedBool, grounded);
 
         if (inAir && grounded)
         {
+            if (animate) CharacterAnimator.SetTrigger(JumpEndTrigger);
+            if (animate) CharacterAnimator.ResetTrigger(JumpStartTrigger);
             inAir = false;
-            if(animate)
-                CharacterAnimator.SetTrigger(JumpEndTrigger);
         }
     }
 

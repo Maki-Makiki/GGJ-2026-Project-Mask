@@ -2,15 +2,20 @@ using UnityEngine;
 
 public class PlayerTeleport : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public Transform teleportTarget;
+
+    public void RespawnPlayer()
     {
-        
+        TeleportPlayer(teleportTarget);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TeleportPlayer(Transform target)
     {
-        
+        this.gameObject.transform.position = target.position;
+    }
+
+    public void SetCheckpoint(Transform target)
+    {
+        teleportTarget = target;
     }
 }
