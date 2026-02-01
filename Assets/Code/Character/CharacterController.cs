@@ -22,6 +22,7 @@ public class CharacterController : MonoBehaviour
 
     [Space]
     [Header("Input")]
+    [SerializeField] string MaskToggleAction = "Mask Toggle";
     [SerializeField] string AttackAction = "Action";
     [SerializeField] string JumpAction = "Jump";
     [SerializeField] string MoveAction = "Move";
@@ -57,6 +58,8 @@ public class CharacterController : MonoBehaviour
     [SerializeField] string WalkBool = "B_Walk";
     [SerializeField] string FlipBool = "B_Flip";
     [SerializeField] string GroundedBool = "B_Ground";
+    [SerializeField] string MaskBool = "B_Mask";
+    [SerializeField] string BrilloTrigger = "T_Brillo";
     [SerializeField] string AttackTrigger = "T_Attack";
 
 
@@ -76,6 +79,8 @@ public class CharacterController : MonoBehaviour
         if (paused)
             return;
 
+        CheckMonkeyInput();
+        CheckMaskToggleInput();
         CheckAttackInput();
         CheckGrounded();
         CheckHorizontalInput();
@@ -209,6 +214,28 @@ public class CharacterController : MonoBehaviour
             CharacterAnimator.SetTrigger(AttackTrigger);
         }
     }
+
+    private void CheckMonkeyInput()
+    {
+        if (ControllerManager.GetActionWasPressed(AttackAction) && !AttackMaskEnable)
+        {
+            Debug.Log("Mono!");
+            CharacterAnimator.SetTrigger(BrilloTrigger);
+            PlataformChange.state.SetPlataformAState();
+        }
+    }
+
+    private void CheckMaskToggleInput()
+    {
+        if (ControllerManager.GetActionWasPressed(MaskToggleAction))
+        {
+            Debug.Log("Mascara Cambio!");
+
+            AttackMaskEnable = !AttackMaskEnable;
+            CharacterAnimator.SetBool(MaskBool, AttackMaskEnable);
+        }
+    }
+
 
     private void CheckGrounded()
     {
