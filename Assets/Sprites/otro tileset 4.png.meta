@@ -1,0 +1,780 @@
+fileFormatVersion: 2
+guid: 90c5ff9060ba2ad5088220c39b933d7a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3196917394551695902
+    second: otro tileset 4_0
+  - first:
+      213: 8015910445365559148
+    second: otro tileset 4_1
+  - first:
+      213: -8901296937283089217
+    second: otro tileset 4_2
+  - first:
+      213: 3203215750466602205
+    second: otro tileset 4_3
+  - first:
+      213: -3848005918480034309
+    second: otro tileset 4_4
+  - first:
+      213: -211964080972095930
+    second: otro tileset 4_5
+  - first:
+      213: -1443428246380070218
+    second: otro tileset 4_6
+  - first:
+      213: 7813975398474647034
+    second: otro tileset 4_7
+  - first:
+      213: -1052185185293200955
+    second: otro tileset 4_8
+  - first:
+      213: -1808511393775471481
+    second: otro tileset 4_9
+  - first:
+      213: 8460569293371826081
+    second: otro tileset 4_10
+  - first:
+      213: -8195704809617393664
+    second: otro tileset 4_11
+  - first:
+      213: -5301570705547120885
+    second: otro tileset 4_12
+  - first:
+      213: 6353391798050408103
+    second: otro tileset 4_13
+  - first:
+      213: 1923443949536583696
+    second: otro tileset 4_14
+  - first:
+      213: -2868631919473051220
+    second: otro tileset 4_15
+  - first:
+      213: 8464973419856019641
+    second: otro tileset 4_16
+  - first:
+      213: 5234669882991544010
+    second: otro tileset 4_17
+  - first:
+      213: -2400775796027798149
+    second: otro tileset 4_18
+  - first:
+      213: 6686601042231895804
+    second: otro tileset 4_19
+  - first:
+      213: -8750022797513276008
+    second: otro tileset 4_20
+  - first:
+      213: -3234490458117390100
+    second: otro tileset 4_21
+  - first:
+      213: 3098256384223016156
+    second: otro tileset 4_22
+  - first:
+      213: 7244968096204920377
+    second: otro tileset 4_23
+  - first:
+      213: 3411876814905420863
+    second: otro tileset 4_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: otro tileset 4_0
+      rect:
+        serializedVersion: 2
+        x: 598
+        y: 817
+        width: 195
+        height: 171
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e59a71519442a3d0800000000000000
+      internalID: -3196917394551695902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_1
+      rect:
+        serializedVersion: 2
+        x: 1401
+        y: 798
+        width: 208
+        height: 197
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6f7b57741c3e3f60800000000000000
+      internalID: 8015910445365559148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_2
+      rect:
+        serializedVersion: 2
+        x: 1527
+        y: 984
+        width: 6
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbc08fcb89d387480800000000000000
+      internalID: -8901296937283089217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_3
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 400
+        width: 169
+        height: 570
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd48f71f0cb147c20800000000000000
+      internalID: 3203215750466602205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_4
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 391
+        width: 350
+        height: 588
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf595673103299ac0800000000000000
+      internalID: -3848005918480034309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_5
+      rect:
+        serializedVersion: 2
+        x: 1052
+        y: 631
+        width: 329
+        height: 306
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64e14889ac3fe0df0800000000000000
+      internalID: -211964080972095930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_6
+      rect:
+        serializedVersion: 2
+        x: 1714
+        y: 920
+        width: 6
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ba30c358a9e7fbe0800000000000000
+      internalID: -1443428246380070218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_7
+      rect:
+        serializedVersion: 2
+        x: 604
+        y: 632
+        width: 386
+        height: 168
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af509b58931d07c60800000000000000
+      internalID: 7813975398474647034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_8
+      rect:
+        serializedVersion: 2
+        x: 1499
+        y: 790
+        width: 92
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c19ba01623e561f0800000000000000
+      internalID: -1052185185293200955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_9
+      rect:
+        serializedVersion: 2
+        x: 1645
+        y: 781
+        width: 101
+        height: 135
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78434c12870e6e6e0800000000000000
+      internalID: -1808511393775471481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_10
+      rect:
+        serializedVersion: 2
+        x: 1735
+        y: 790
+        width: 57
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1af510142faf96570800000000000000
+      internalID: 8460569293371826081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_11
+      rect:
+        serializedVersion: 2
+        x: 1435
+        y: 636
+        width: 114
+        height: 90
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0087bcaf5e1034e80800000000000000
+      internalID: -8195704809617393664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_12
+      rect:
+        serializedVersion: 2
+        x: 1633
+        y: 508
+        width: 115
+        height: 262
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0f2f3048890d66b0800000000000000
+      internalID: -5301570705547120885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_13
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 399
+        width: 697
+        height: 192
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a6cca9bd28cb2850800000000000000
+      internalID: 6353391798050408103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_14
+      rect:
+        serializedVersion: 2
+        x: 1523
+        y: 556
+        width: 19
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 010a08dc41271ba10800000000000000
+      internalID: 1923443949536583696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_15
+      rect:
+        serializedVersion: 2
+        x: 1608
+        y: 551
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca93678c7729038d0800000000000000
+      internalID: -2868631919473051220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_16
+      rect:
+        serializedVersion: 2
+        x: 793
+        y: 186
+        width: 615
+        height: 230
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b044abd970a97570800000000000000
+      internalID: 8464973419856019641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_17
+      rect:
+        serializedVersion: 2
+        x: 916
+        y: 396
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac6852c268845a840800000000000000
+      internalID: 5234669882991544010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_18
+      rect:
+        serializedVersion: 2
+        x: 1277
+        y: 396
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7d4864222bbeaed0800000000000000
+      internalID: -2400775796027798149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_19
+      rect:
+        serializedVersion: 2
+        x: 1435
+        y: 38
+        width: 318
+        height: 515
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf62df488349bcc50800000000000000
+      internalID: 6686601042231895804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_20
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 231
+        width: 182
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 895c6a110aca19680800000000000000
+      internalID: -8750022797513276008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_21
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 236
+        width: 192
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce0c58eb018cc13d0800000000000000
+      internalID: -3234490458117390100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_22
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 15
+        width: 103
+        height: 341
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd4f2b424c73ffa20800000000000000
+      internalID: 3098256384223016156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_23
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2
+        width: 606
+        height: 202
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9361557191c4b8460800000000000000
+      internalID: 7244968096204920377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: otro tileset 4_24
+      rect:
+        serializedVersion: 2
+        x: 614
+        y: 160
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3c24d1e2eb695f20800000000000000
+      internalID: 3411876814905420863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      otro tileset 4_0: -3196917394551695902
+      otro tileset 4_1: 8015910445365559148
+      otro tileset 4_10: 8460569293371826081
+      otro tileset 4_11: -8195704809617393664
+      otro tileset 4_12: -5301570705547120885
+      otro tileset 4_13: 6353391798050408103
+      otro tileset 4_14: 1923443949536583696
+      otro tileset 4_15: -2868631919473051220
+      otro tileset 4_16: 8464973419856019641
+      otro tileset 4_17: 5234669882991544010
+      otro tileset 4_18: -2400775796027798149
+      otro tileset 4_19: 6686601042231895804
+      otro tileset 4_2: -8901296937283089217
+      otro tileset 4_20: -8750022797513276008
+      otro tileset 4_21: -3234490458117390100
+      otro tileset 4_22: 3098256384223016156
+      otro tileset 4_23: 7244968096204920377
+      otro tileset 4_24: 3411876814905420863
+      otro tileset 4_3: 3203215750466602205
+      otro tileset 4_4: -3848005918480034309
+      otro tileset 4_5: -211964080972095930
+      otro tileset 4_6: -1443428246380070218
+      otro tileset 4_7: 7813975398474647034
+      otro tileset 4_8: -1052185185293200955
+      otro tileset 4_9: -1808511393775471481
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
