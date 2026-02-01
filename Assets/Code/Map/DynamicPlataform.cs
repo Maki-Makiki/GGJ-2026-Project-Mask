@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Tilemaps;
 
 public class DynamicPlataform : MonoBehaviour
 {
     public bool plataformA = true;
-    public SpriteRenderer spriteRenderer;
+    public Tilemap tileMapRenderer;
     public BoxCollider2D boxCollider2D;
 
     private Coroutine colorLerpCoroutine;
@@ -43,7 +44,7 @@ public class DynamicPlataform : MonoBehaviour
 
         if (instant)
         {
-            spriteRenderer.color = targetColor;
+            tileMapRenderer.color = targetColor;
         }
         else
         {
@@ -55,16 +56,16 @@ public class DynamicPlataform : MonoBehaviour
 
     IEnumerator AnimateColor(Color endColor)
     {
-        Color startColor = spriteRenderer.color;
+        Color startColor = tileMapRenderer.color;
         float time = 0;
         float duration = PlataformChange.state.timeToChange;
 
         while (time < duration)
         {
-            spriteRenderer.color = Color.Lerp(startColor, endColor, time / duration);
+            tileMapRenderer.color = Color.Lerp(startColor, endColor, time / duration);
             time += Time.deltaTime;
             yield return null;
         }
-        spriteRenderer.color = endColor;
+        tileMapRenderer.color = endColor;
     }
 }
