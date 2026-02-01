@@ -14,7 +14,7 @@ namespace Code.UI
         {
             var action = ControllerManager.state.playerImput.actions[actionName];
             var bindingIndex = action.GetBindingIndex(InputBinding.MaskByGroup(ControllerManager.state.playerImput.currentControlScheme));
-            action.GetBindingDisplayString(bindingIndex, out string deviceLayout, out string controlPath);
+            action.GetBindingDisplayString(bindingIndex, out var deviceLayout, out string controlPath);
             var a = ControllerManager.state.currentIconSet.Buttons;
             promptImage.sprite = a.FirstOrDefault(b => b.path == controlPath)?.sprite;
         }

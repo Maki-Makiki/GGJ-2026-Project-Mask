@@ -50,11 +50,6 @@ public class ControllerManager : MonoBehaviour
         DiviceChangedFunction();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public void DiviceChangedFunction()
     {
         if (playerImput == null)

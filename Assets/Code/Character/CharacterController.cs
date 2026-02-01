@@ -1,6 +1,7 @@
+using Code.Character;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+public class CharacterController : MonoBehaviour, IPausable
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -12,5 +13,10 @@ public class CharacterController : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void Pause()
+    {
+        throw new System.NotImplementedException();
     }
 }
