@@ -257,7 +257,7 @@ public class CharacterController : MonoBehaviour, IPausable
             groundCheckDistance,
             groundLayer
         );
-        print(rigidBody2D.linearVelocity);
+        //print(rigidBody2D.linearVelocity);
         grounded = hit.collider != null && Mathf.Abs(rigidBody2D.linearVelocity.y) < 2f;
         if (animate) CharacterAnimator.SetBool(GroundedBool, grounded);
 
