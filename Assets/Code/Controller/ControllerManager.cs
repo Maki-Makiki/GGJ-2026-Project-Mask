@@ -84,4 +84,24 @@ public class ControllerManager : MonoBehaviour
     {
         currentIconSet = inputList.inputIconsSet.FirstOrDefault(s => s.ImputName == divece.ToString());
     }
+
+    public static Vector2 GetActionVector2(string ActionName)
+    {
+        return state.playerImput.actions[ActionName].ReadValue<Vector2>();
+    }
+
+    public static bool GetActionWasPerformed(string ActionName)
+    {
+        return state.playerImput.actions[ActionName].WasPerformedThisFrame();
+    }
+
+    public static bool GetActionWasPressed(string ActionName)
+    {
+        return state.playerImput.actions[ActionName].WasPressedThisFrame();
+    }
+
+    public static bool GetActionWasRelased(string ActionName)
+    {
+        return state.playerImput.actions[ActionName].WasReleasedThisFrame();
+    }
 }
