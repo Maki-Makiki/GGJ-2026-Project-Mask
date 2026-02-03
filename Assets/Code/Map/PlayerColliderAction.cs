@@ -18,13 +18,14 @@ public class PlayerColliderAction : MonoBehaviour
         {
             Debug.Log("colision con " + Trigger.gameObject.name);
             if (Trigger.gameObject.tag == "NextLevel")
-            {
                 SceneManager.LoadScene(Trigger.gameObject.name.Split(" | ")[1]);
-            }
-            else
-            {
+
+            if (Trigger.gameObject.tag == "Event")
+                Trigger.gameObject.GetComponent<EventCaller>().CallEvent();
+
+            if (Trigger.gameObject.tag == "Dead")
                 playerTeleport.RespawnPlayer();
-            }
+
         }
        
     }

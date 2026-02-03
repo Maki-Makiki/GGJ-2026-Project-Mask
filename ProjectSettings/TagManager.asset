@@ -8,6 +8,8 @@ TagManager:
   - EnemyAtack
   - Checkpoint
   - NextLevel
+  - Event
+  - PlayerBody
   layers:
   - Default
   - TransparentFX
@@ -18,7 +20,7 @@ TagManager:
   - Wall
   - Floor
   - Dead
-  - 
+  - Techo
   - EnemyBody
   - EnemyDamage
   - PlayerMoveBody
@@ -32,7 +34,7 @@ TagManager:
   - 
   - Debug
   - 
-  - 
+  - Cabezas
   - 
   - 
   - 

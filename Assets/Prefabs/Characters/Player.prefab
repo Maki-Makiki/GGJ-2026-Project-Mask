@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 747548593243293912}
   m_Layer: 13
   m_Name: BodyCollider
-  m_TagString: Untagged
+  m_TagString: PlayerBody
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

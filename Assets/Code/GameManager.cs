@@ -7,6 +7,8 @@ namespace Code
     public enum GameScenes
     {
         MainMenu,
+        Intro,
+        TutorialMono,
         Lvl1,
         Lvl2
     }
@@ -31,6 +33,7 @@ namespace Code
         public void QuitGame()
         {
             Debug.Log("Quit Game");
+            Application.Quit();
         }
     }
 }

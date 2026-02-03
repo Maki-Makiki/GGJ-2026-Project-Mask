@@ -138,6 +138,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ad2f8bb7-c762-4e8e-a941-370401892c76
+    m_ActionName: 'UI/MousePosition[/Mouse/position]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Playstation
   m_DefaultActionMap: Player
@@ -156,5 +160,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ControllerManager
   ImputDivece: 0
-  playerImput: {fileID: 0}
+  playerImput: {fileID: 371864206393577793}
   inputList: {fileID: 11400000, guid: 01a76b512c8a76040805429799dda46b, type: 2}
+  currentIconSet:
+    ImputName: 
+    Buttons: []

@@ -133,3 +133,5 @@ MonoBehaviour:
       sprite: {fileID: 21300000, guid: 1745796df585b614ea9133bbcfaba723, type: 3}
     - path: rightArrow
       sprite: {fileID: 21300000, guid: 9a141392618b2924a8751eecedb00de7, type: 3}
+    - path: J
+      sprite: {fileID: 21300000, guid: 0420c01f59fdef24e88e82be654882db, type: 3}

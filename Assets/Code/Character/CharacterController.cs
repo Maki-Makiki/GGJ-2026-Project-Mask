@@ -64,10 +64,11 @@ public class CharacterController : MonoBehaviour, IPausable
     [SerializeField] string AttackTrigger = "T_Attack";
 
 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        if(boxCollider2D == null)
+        if (boxCollider2D == null)
             boxCollider2D = this.gameObject.GetComponent<CapsuleCollider2D>();
 
         if (rigidBody2D == null)
@@ -286,4 +287,5 @@ public class CharacterController : MonoBehaviour, IPausable
     {
         throw new System.NotImplementedException();
     }
+
 }

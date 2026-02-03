@@ -23,7 +23,7 @@ public class ControllerManager : MonoBehaviour
     public InputIconsSet currentIconSet;
 
     public event Action OnDeviceChanged;
-    
+    [SerializeField] bool BlockedControllers = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -87,21 +87,36 @@ public class ControllerManager : MonoBehaviour
 
     public static Vector2 GetActionVector2(string ActionName)
     {
+        if (ControllerManager.state.BlockedControllers) return Vector2.zero;
         return state.playerImput.actions[ActionName].ReadValue<Vector2>();
     }
 
     public static bool GetActionWasPerformed(string ActionName)
     {
+        if (ControllerManager.state.BlockedControllers) return false;
         return state.playerImput.actions[ActionName].WasPerformedThisFrame();
+       
     }
 
     public static bool GetActionWasPressed(string ActionName)
     {
+        if (ControllerManager.state.BlockedControllers) return false;
         return state.playerImput.actions[ActionName].WasPressedThisFrame();
     }
 
     public static bool GetActionWasRelased(string ActionName)
     {
+        if (ControllerManager.state.BlockedControllers) return false;
         return state.playerImput.actions[ActionName].WasReleasedThisFrame();
+    }
+
+    public static void LockControls()
+    {
+        ControllerManager.state.BlockedControllers = true;
+    }
+
+    public static void UnlockControls()
+    {
+        ControllerManager.state.BlockedControllers = false;
     }
 }

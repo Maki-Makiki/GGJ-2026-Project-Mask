@@ -95,7 +95,7 @@ ScriptedImporter:
     spritePosition: {x: 0, y: 0}
   multiSpriteImportData: []
   layeredSpriteImportData:
-  - name: Paint Layer 2
+  - name: 'Paint Layer 2 '
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -117,7 +117,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 5332}
     spritePosition: {x: 0, y: 0}
-  - name: Paint Layer 3
+  - name: 'Paint Layer 3 '
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -137,9 +137,9 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 2172}
-    spritePosition: {x: 445, y: 0}
-  - name: Paint Layer 4
+    uvTransform: {x: -2, y: 2172}
+    spritePosition: {x: 451, y: 0}
+  - name: 'Paint Layer 4 '
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -161,7 +161,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4340}
     spritePosition: {x: 0, y: 0}
-  - name: Background
+  - name: 'Background '
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -205,7 +205,7 @@ ScriptedImporter:
   - name: DefaultTexturePlatform
     overridden: 0
     ignorePlatformSupport: 0
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: 4
     textureCompression: 0
@@ -227,6 +227,30 @@ ScriptedImporter:
     allowsAlphaSplitting: 0
     androidETC2FallbackOverride: 0
   - name: WebGL
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Android
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: iPhone
     overridden: 0
     ignorePlatformSupport: 0
     maxTextureSize: 2048
@@ -266,7 +290,7 @@ ScriptedImporter:
   resliceFromLayer: 0
   pSDLayerImportSetting: []
   psdLayers:
-  - name: Paint Layer 1
+  - name: 'Paint Layer 1 '
     spriteName: 
     isGroup: 0
     parentIndex: -1
@@ -276,8 +300,8 @@ ScriptedImporter:
     flatten: 0
     isImported: 0
     isVisible: 1
-  - name: Paint Layer 2
-    spriteName: Paint Layer 2
+  - name: 'Paint Layer 2 '
+    spriteName: 'Paint Layer 2 '
     isGroup: 0
     parentIndex: -1
     spriteID: 674a667528f3b1430842c2f7a9377215
@@ -286,8 +310,8 @@ ScriptedImporter:
     flatten: 0
     isImported: 1
     isVisible: 1
-  - name: Paint Layer 3
-    spriteName: Paint Layer 3
+  - name: 'Paint Layer 3 '
+    spriteName: 'Paint Layer 3 '
     isGroup: 0
     parentIndex: -1
     spriteID: cd820033116ea0ed4b3de10ce03dfcaa
@@ -296,8 +320,8 @@ ScriptedImporter:
     flatten: 0
     isImported: 1
     isVisible: 1
-  - name: Paint Layer 4
-    spriteName: Paint Layer 4
+  - name: 'Paint Layer 4 '
+    spriteName: 'Paint Layer 4 '
     isGroup: 0
     parentIndex: -1
     spriteID: 3484bb89b2f08011d89f9b727190a33f
@@ -306,8 +330,8 @@ ScriptedImporter:
     flatten: 0
     isImported: 1
     isVisible: 1
-  - name: Background
-    spriteName: Background
+  - name: 'Background '
+    spriteName: 'Background '
     isGroup: 0
     parentIndex: -1
     spriteID: 36eb181bf2e81a0e7a07a380642bb6b2
@@ -320,7 +344,7 @@ ScriptedImporter:
   rigPSDLayers: []
   sharedRigPSDLayers: []
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639054849685505880
+  platformSettingsDirtyTick: 639056839943617915
   spriteSizeExpandChanged: 0
   generateGOHierarchy: 0
   textureAssetName: 
