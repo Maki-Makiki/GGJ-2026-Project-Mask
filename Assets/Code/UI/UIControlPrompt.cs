@@ -9,6 +9,13 @@ namespace Code.UI
     public class UIControlPrompt : MonoBehaviour
     {
         public Image promptImage;
+        public bool autoStart = true;
+        public string autoStartAction = "ActionName";
+
+        private void Start()
+        {
+            if(autoStart) { ShowActionPrompt(autoStartAction); }
+        }
 
         public void ShowActionPrompt(string actionName)
         {
@@ -19,6 +26,7 @@ namespace Code.UI
                 action.GetBindingDisplayString(bindingIndex, out var deviceLayout, out string controlPath);
                 var a = ControllerManager.state.currentIconSet.Buttons;
                 promptImage.sprite = a.FirstOrDefault(b => b.path == controlPath)?.sprite;
+                promptImage.enabled = (true);
             }
         }
     }

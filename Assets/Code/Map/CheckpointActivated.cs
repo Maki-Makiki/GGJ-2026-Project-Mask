@@ -5,6 +5,9 @@ public class CheckpointActivated : MonoBehaviour
 {
     public ParticleSystem particulasFlotantes; // El loop continuo
     public ParticleSystem particulaExplosion;  // El One Shot
+    public AudioSource audioSource;  // El One Shot
+    public AudioSource audioSourceAmbient;  // El One Shot
+    public AudioClip audioClip;  // El One Shot
 
     private bool activado = false;
     void ActivarCheckpoint()
@@ -18,6 +21,8 @@ public class CheckpointActivated : MonoBehaviour
         // Opcional: particulasFlotantes.Stop(true, ParticleSystemStopBehavior.StopEmitting);
 
         // 2. Disparar la explosión
+        PlaySound();
+        audioSourceAmbient.Stop();
         particulaExplosion.Play();
 
         // 3. (Opcional) Feedback visual extra
@@ -42,5 +47,10 @@ public class CheckpointActivated : MonoBehaviour
         {
             ActivarCheckpoint(); // Las partículas que ya tienes en este script
         }
+    }
+
+    public void PlaySound()
+    {
+        audioSource.PlayOneShot(audioClip);
     }
 }

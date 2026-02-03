@@ -127,6 +127,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 417135186464375045}
+    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ShowActionPrompt
+      objectReference: {fileID: 0}
+    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: Code.UI.UIControlPrompt, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
+      value: Accept
+      objectReference: {fileID: 0}
+    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 2426592899520009097, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
       propertyPath: playerImput
       value: 
@@ -191,6 +223,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.PlayerInput
+--- !u!114 &123884071 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2426592899520009097, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+  m_PrefabInstance: {fileID: 123884069}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74876ef87e958154286c880e5fd29bcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ControllerManager
 --- !u!1 &670214613
 GameObject:
   m_ObjectHideFlags: 0
@@ -10089,6 +10132,135 @@ MonoBehaviour:
   speed: 1.5
   smooth: 8
   useUnscaledTime: 1
+--- !u!1 &927513299
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 927513301}
+  - component: {fileID: 927513300}
+  m_Layer: 0
+  m_Name: Audio Source
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &927513300
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927513299}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -5315063954970491207, guid: ac09b1f32ebb2604ab7f2b632839460b, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: f2095fb9217e1304cbd214a363347f6e, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &927513301
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927513299}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.88594, y: -0.79195, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1094583653
 GameObject:
   m_ObjectHideFlags: 0
@@ -10537,7 +10709,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Menu
+          m_StringArgument: Creditos
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1423475743
@@ -10856,7 +11028,31 @@ MonoBehaviour:
   startOpaque: 1
   onFadeStart:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 123884071}
+        m_TargetAssemblyTypeName: ControllerManager, Assembly-CSharp
+        m_MethodName: DiviceChangedFunction
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 417135186464375045}
+        m_TargetAssemblyTypeName: Code.UI.UIControlPrompt, Assembly-CSharp
+        m_MethodName: ShowActionPrompt
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Accept
+          m_BoolArgument: 0
+        m_CallState: 2
   onFadeMidpoint:
     m_PersistentCalls:
       m_Calls: []
@@ -11284,10 +11480,42 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2588676699690297463, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2588676699690297463, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2588676699690297463, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2588676699690297463, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2588676699690297463, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2588676699690297463, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4362157914923396459, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1147773514}
+    - target: {fileID: 4501886061598228205, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: m_Volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4501886061598228205, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -841962636708246490, guid: ac09b1f32ebb2604ab7f2b632839460b, type: 2}
     - target: {fileID: 6592653874111676184, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.16
@@ -11524,6 +11752,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c4d61d814c19a34c85c8827e6abafb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleDialogueIntro
+--- !u!114 &417135186464375045 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8664058090195012970, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+  m_PrefabInstance: {fileID: 417135186464375042}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d6963b4347db8a439220316121158f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UI.UIControlPrompt
 --- !u!4 &440388264682719034
 Transform:
   m_ObjectHideFlags: 0
@@ -17337,3 +17576,4 @@ SceneRoots:
   - {fileID: 1147773517}
   - {fileID: 440388264682719034}
   - {fileID: 123884069}
+  - {fileID: 927513301}

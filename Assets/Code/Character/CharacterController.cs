@@ -64,7 +64,6 @@ public class CharacterController : MonoBehaviour, IPausable
     [SerializeField] string AttackTrigger = "T_Attack";
 
 
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -242,6 +241,7 @@ public class CharacterController : MonoBehaviour, IPausable
 
             AttackMaskEnable = !AttackMaskEnable;
             CharacterAnimator.SetBool(MaskBool, AttackMaskEnable);
+            ///aqui
         }
     }
 
