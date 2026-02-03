@@ -250,8 +250,15 @@ public class JamOptionsMenu : MonoBehaviour
         // Fullscreen mode simple para jam
         Screen.fullScreen = appliedFullscreen;
 
-        // Aplicar resolución
-        Screen.SetResolution(r.width, r.height, (appliedFullscreen) ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed, r.refreshRateRatio);
+#if !UNITY_WEBGL
+    // Aplicar resolución (NO en WebGL porque rompe el canvas / escala en itch)
+    Screen.SetResolution(
+        r.width,
+        r.height,
+        (appliedFullscreen) ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed,
+        r.refreshRateRatio
+    );
+#endif
 
         // VSync
         QualitySettings.vSyncCount = appliedVsync ? 1 : 0;
