@@ -1,8 +1,8 @@
-using System;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using System.Collections;
 
 namespace Code.UI
 {
@@ -12,22 +12,76 @@ namespace Code.UI
         public bool autoStart = true;
         public string autoStartAction = "ActionName";
 
-        private void Start()
+        [SerializeField] string currentAction;
+        [SerializeField] string currentBinding;
+
+        void OnEnable()
         {
-            if(autoStart) { ShowActionPrompt(autoStartAction); }
+            StartCoroutine(WaitForControllerManager());
+        }
+
+        IEnumerator WaitForControllerManager()
+        {
+            while (!ControllerManager.IsReady)
+                yield return null;
+
+            ControllerManager.state.OnDeviceChanged -= RefreshPrompt;
+            ControllerManager.state.OnDeviceChanged += RefreshPrompt;
+
+            RefreshPrompt();
+        }
+
+        void OnDisable()
+        {
+            if (ControllerManager.state != null)
+                ControllerManager.state.OnDeviceChanged -= RefreshPrompt;
+        }
+
+        void Start()
+        {
+            if (autoStart)
+            {
+                ShowActionPrompt(autoStartAction);
+            }
         }
 
         public void ShowActionPrompt(string actionName)
         {
-            if(ControllerManager.state != null)
+            currentAction = actionName;
+            RefreshPrompt();
+        }
+
+        void RefreshPrompt()
+        {
+            if (ControllerManager.state == null) return;
+            if (string.IsNullOrEmpty(currentAction)) return;
+
+            Debug.Log("ControllerManager OK!");
+
+            var playerInput = ControllerManager.state.playerImput;
+            var action = playerInput.actions[currentAction];
+
+            var bindingIndex = action.GetBindingIndex(
+                InputBinding.MaskByGroup(playerInput.currentControlScheme)
+            );
+
+            if (bindingIndex < 0)
             {
-                var action = ControllerManager.state.playerImput.actions[actionName];
-                var bindingIndex = action.GetBindingIndex(InputBinding.MaskByGroup(ControllerManager.state.playerImput.currentControlScheme));
-                action.GetBindingDisplayString(bindingIndex, out var deviceLayout, out string controlPath);
-                var a = ControllerManager.state.currentIconSet.Buttons;
-                promptImage.sprite = a.FirstOrDefault(b => b.path == controlPath)?.sprite;
-                promptImage.enabled = (true);
+                promptImage.enabled = false;
+                return;
             }
+
+            action.GetBindingDisplayString(
+                bindingIndex,
+                out var deviceLayout,
+                out string controlPath
+            );
+
+            var iconSet = ControllerManager.GetCurrentIconSet();
+            var icon = iconSet.Buttons.FirstOrDefault(b => b.path == controlPath);
+
+            promptImage.sprite = icon?.sprite;
+            promptImage.enabled = icon != null;
         }
     }
 }

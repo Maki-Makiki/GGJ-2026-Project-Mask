@@ -10071,7 +10071,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 35569a72ad3036941913f0de97e4ce4d, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.6
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -10079,10 +10079,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 0
-  MinDistance: 0
-  MaxDistance: 9.760889
+  MinDistance: 0.35
+  MaxDistance: 14
   Pan2D: 0
-  rolloffMode: 1
+  rolloffMode: 2
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -10092,12 +10092,21 @@ AudioSource:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -3.3100882
+      outSlope: -3.3100882
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.19755675
+    - serializedVersion: 3
+      time: 0.42482919
+      value: 0.24977899
+      inSlope: -0.9746845
+      outSlope: -0.9746845
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.2969304
+      outWeight: 0.23701116
     - serializedVersion: 3
       time: 1
       value: 0
@@ -10311,6 +10320,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 6942914597044256247}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   EventToCall1:
     m_PersistentCalls:
       m_Calls: []
@@ -10351,7 +10372,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 7e7134a1a8bf2904abce228e09c0cef7, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.9
+  m_Volume: 0.7
   m_Pitch: 1
   Loop: 0
   Mute: 0

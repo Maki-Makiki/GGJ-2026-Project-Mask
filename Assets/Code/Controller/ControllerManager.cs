@@ -25,8 +25,21 @@ public class ControllerManager : MonoBehaviour
     public event Action OnDeviceChanged;
     [SerializeField] bool BlockedControllers = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    //private void Update()
+    //{
+    //    Debug.Log(playerImput.currentControlScheme);
+    //    Debug.Log(string.Join(", ", playerImput.devices));
+    //}
+
+    public static bool IsReady { get; private set; }
+
+    void Awake()
+    {
+        Init();
+        IsReady = true;
+    }
+
+    public void Init()
     {
         transform.parent = null;
         if (state == null)
@@ -36,7 +49,7 @@ public class ControllerManager : MonoBehaviour
         }
         else
         {
-            if(state != this)
+            if (state != this)
             {
                 Debug.Log($"[{gameObject.name}({gameObject.GetInstanceID()})] ya hay otro ControllerManager Me mato!");
                 Destroy(gameObject);
@@ -76,13 +89,19 @@ public class ControllerManager : MonoBehaviour
                 break;
         }
 
-        SetCurrentIconSet(ImputDivece);
+        //SetCurrentIconSet(ImputDivece);
         OnDeviceChanged?.Invoke();
     }
 
-    void SetCurrentIconSet(m_ImputDivice divece)
+    //void SetCurrentIconSet(m_ImputDivice divece)
+    //{
+    //    currentIconSet = inputList.inputIconsSet.FirstOrDefault(s => s.ImputName == divece.ToString());
+    //}
+
+    public static InputIconsSet GetCurrentIconSet()
     {
-        currentIconSet = inputList.inputIconsSet.FirstOrDefault(s => s.ImputName == divece.ToString());
+        InputIconsSet currentIconSet = ControllerManager.state.inputList.inputIconsSet.FirstOrDefault(s => s.ImputName == ControllerManager.state.ImputDivece.ToString());
+        return currentIconSet;
     }
 
     public static Vector2 GetActionVector2(string ActionName)

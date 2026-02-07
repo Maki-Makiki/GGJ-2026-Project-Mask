@@ -1,0 +1,1644 @@
+diff --git a/Assets/Code/UI/JamOptionsMenu.cs b/Assets/Code/UI/JamOptionsMenu.cs
+index 9487739..30e15b0 100644
+--- a/Assets/Code/UI/JamOptionsMenu.cs
++++ b/Assets/Code/UI/JamOptionsMenu.cs
+@@ -3,6 +3,8 @@ using System.Collections.Generic;
+ using TMPro;
+ using UnityEngine;
+ using UnityEngine.Audio;
++using UnityEngine.Rendering.Universal;
++using UnityEngine.UI;
+ 
+ public class JamOptionsMenu : MonoBehaviour
+ {
+@@ -11,17 +13,12 @@ public class JamOptionsMenu : MonoBehaviour
+ 
+     [Header("Audio Mixer (exposed parameters)")]
+     public AudioMixer audioMixer;
+-
+-    [Tooltip("Nombre del parámetro expuesto en el AudioMixer para efectos (en dB). Ej: SFXVolume")]
+     public string sfxMixerParam = "SFXVolume";
+-
+-    [Tooltip("Nombre del parámetro expuesto en el AudioMixer para música (en dB). Ej: MusicVolume")]
+     public string musicMixerParam = "MusicVolume";
+ 
+     [Header("UI - Texts")]
+     public TMP_Text sfxText;
+     public TMP_Text musicText;
+-
+     public TMP_Text resolutionText;
+     public TMP_Text fullscreenText;
+     public TMP_Text vsyncText;
+@@ -29,22 +26,24 @@ public class JamOptionsMenu : MonoBehaviour
+     [Header("Audio Test")]
+     public AudioSource testAudioSourceSFX;
+     public AudioSource testAudioSourceMusic;
+-
+-    [Tooltip("Clip de prueba para efectos")]
+     public AudioClip sfxTestClip;
+-
+-   [Tooltip("Clip de prueba para música (opcional)")]
+     public AudioClip musicTestClip;
+ 
+     [Header("Step Settings")]
+     [Range(1, 100)] public int volumeStep = 10;
+ 
+-    // Valores guardados / aplicados
++    // =========================
++    // AUDIO STATE
++    // =========================
++
+     private int sfxVolume01_100 = 100;
+     private int musicVolume01_100 = 100;
+ 
+-    // Video: lo aplicado (real) y lo pendiente (preview)
+-    private List<Resolution> availableResolutions = new List<Resolution>();
++    // =========================
++    // VIDEO STATE (PC)
++    // =========================
++
++    private List<Resolution> availableResolutions = new();
+     private int appliedResolutionIndex = 0;
+     private int pendingResolutionIndex = 0;
+ 
+@@ -54,16 +53,49 @@ public class JamOptionsMenu : MonoBehaviour
+     private bool appliedVsync = true;
+     private bool pendingVsync = true;
+ 
+-    // PlayerPrefs keys
++    // =========================
++    // VIDEO STATE (ANDROID)
++    // =========================
++
++    private readonly int[] androidResolutionPercents = { 40, 50, 60, 70, 80, 90, 100};
++    private int appliedAndroidResIndex = 0;
++    private int pendingAndroidResIndex = 0;
++
++    // =========================
++    // PREF KEYS
++    // =========================
++
+     private const string KEY_SFX = "opt_sfx_0_100";
+     private const string KEY_MUSIC = "opt_music_0_100";
+     private const string KEY_RES_INDEX = "opt_res_index";
+     private const string KEY_FULLSCREEN = "opt_fullscreen";
+     private const string KEY_VSYNC = "opt_vsync";
+ 
++    private bool IsAndroid => Application.platform == RuntimePlatform.Android;
++
++
++    [Header("Platform")]
++    [Tooltip("Contenedor completo de la opción Pantalla Completa")]
++    public GameObject fullscreenContainer;
++
++    [Header("Navigation")]
++    [Tooltip("Botón de Sincronización Vertical")]
++    public Selectable vSyncSelectable;
++
++    [Tooltip("Botón de Pantalla Completa")]
++    public Selectable fullscreenSelectable;
++
++    [Tooltip("Botón Aplicar")]
++    public Selectable applySelectable;
++
++    // =========================
++    // UNITY
++    // =========================
++
+     private void Awake()
+     {
+-        BuildResolutionList();
++        if (!IsAndroid)
++            BuildResolutionList();
+     }
+ 
+     private void Start()
+@@ -72,15 +104,16 @@ public class JamOptionsMenu : MonoBehaviour
+         {
+             LoadAll();
+             ApplyAudioToMixer();
+-            ApplyVideoNow(); // aplica lo guardado
++            ApplyVideoNow();
+         }
+         else
+         {
+-            // Si no auto-carga, al menos reflejamos UI con defaults actuales del sistema
+             ReadCurrentSystemVideoAsApplied();
+             CopyAppliedToPending();
+             RefreshAllUI();
+         }
++
++        ApplyPlatformRules();
+     }
+ 
+     // =========================
+@@ -92,11 +125,28 @@ public class JamOptionsMenu : MonoBehaviour
+         sfxVolume01_100 = Mathf.Clamp(PlayerPrefs.GetInt(KEY_SFX, 100), 0, 100);
+         musicVolume01_100 = Mathf.Clamp(PlayerPrefs.GetInt(KEY_MUSIC, 100), 0, 100);
+ 
+-        appliedResolutionIndex = Mathf.Clamp(PlayerPrefs.GetInt(KEY_RES_INDEX, GetClosestResolutionIndexToCurrent()), 0, availableResolutions.Count - 1);
+-        appliedFullscreen = PlayerPrefs.GetInt(KEY_FULLSCREEN, Screen.fullScreen ? 1 : 0) == 1;
+-        appliedVsync = PlayerPrefs.GetInt(KEY_VSYNC, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
++        if (IsAndroid)
++        {
++            appliedAndroidResIndex = Mathf.Clamp(
++                PlayerPrefs.GetInt(KEY_RES_INDEX, 0),
++                0,
++                androidResolutionPercents.Length - 1
++            );
++            pendingAndroidResIndex = appliedAndroidResIndex;
++        }
++        else
++        {
++            appliedResolutionIndex = Mathf.Clamp(
++                PlayerPrefs.GetInt(KEY_RES_INDEX, GetClosestResolutionIndexToCurrent()),
++                0,
++                availableResolutions.Count - 1
++            );
++
++            appliedFullscreen = PlayerPrefs.GetInt(KEY_FULLSCREEN, Screen.fullScreen ? 1 : 0) == 1;
++            appliedVsync = PlayerPrefs.GetInt(KEY_VSYNC, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
++            CopyAppliedToPending();
++        }
+ 
+-        CopyAppliedToPending();
+         RefreshAllUI();
+     }
+ 
+@@ -105,9 +155,14 @@ public class JamOptionsMenu : MonoBehaviour
+         PlayerPrefs.SetInt(KEY_SFX, sfxVolume01_100);
+         PlayerPrefs.SetInt(KEY_MUSIC, musicVolume01_100);
+ 
+-        PlayerPrefs.SetInt(KEY_RES_INDEX, appliedResolutionIndex);
+-        PlayerPrefs.SetInt(KEY_FULLSCREEN, appliedFullscreen ? 1 : 0);
+-        PlayerPrefs.SetInt(KEY_VSYNC, appliedVsync ? 1 : 0);
++        if (IsAndroid)
++            PlayerPrefs.SetInt(KEY_RES_INDEX, appliedAndroidResIndex);
++        else
++        {
++            PlayerPrefs.SetInt(KEY_RES_INDEX, appliedResolutionIndex);
++            PlayerPrefs.SetInt(KEY_FULLSCREEN, appliedFullscreen ? 1 : 0);
++            PlayerPrefs.SetInt(KEY_VSYNC, appliedVsync ? 1 : 0);
++        }
+ 
+         PlayerPrefs.Save();
+     }
+@@ -118,94 +173,80 @@ public class JamOptionsMenu : MonoBehaviour
+ 
+     public void SfxMinus10() => SetSfxVolume(sfxVolume01_100 - volumeStep);
+     public void SfxPlus10() => SetSfxVolume(sfxVolume01_100 + volumeStep);
+-
+     public void MusicMinus10() => SetMusicVolume(musicVolume01_100 - volumeStep);
+     public void MusicPlus10() => SetMusicVolume(musicVolume01_100 + volumeStep);
+ 
+-    public void PlaySfxTest()
+-    {
+-        if (testAudioSourceSFX == null || sfxTestClip == null) return;
+-
+-        testAudioSourceSFX.Stop();
+-        testAudioSourceSFX.clip = sfxTestClip;
+-        testAudioSourceSFX.Play();
+-    }
+-
+-    public void PlayMusicTest()
+-    {
+-        if (testAudioSourceMusic == null || musicTestClip == null) return;
+-
+-        testAudioSourceMusic.Stop();
+-        testAudioSourceMusic.clip = musicTestClip;
+-        testAudioSourceMusic.Play();
+-    }
+-
+-    private void SetSfxVolume(int value0_100)
++    private void SetSfxVolume(int v)
+     {
+-        sfxVolume01_100 = Mathf.Clamp(value0_100, 0, 100);
++        sfxVolume01_100 = Mathf.Clamp(v, 0, 100);
+         ApplyAudioToMixer();
+         RefreshAudioUI();
+         PlayerPrefs.SetInt(KEY_SFX, sfxVolume01_100);
+-        PlayerPrefs.Save();
+     }
+ 
+-    private void SetMusicVolume(int value0_100)
++    private void SetMusicVolume(int v)
+     {
+-        musicVolume01_100 = Mathf.Clamp(value0_100, 0, 100);
++        musicVolume01_100 = Mathf.Clamp(v, 0, 100);
+         ApplyAudioToMixer();
+         RefreshAudioUI();
+         PlayerPrefs.SetInt(KEY_MUSIC, musicVolume01_100);
+-        PlayerPrefs.Save();
+     }
+ 
+     private void ApplyAudioToMixer()
+     {
+-        if (audioMixer == null) return;
++        if (!audioMixer) return;
+ 
+-        // Convertimos 0..100 a 0.0001..1 (evita log(0))
+-        float sfxLinear = Mathf.Clamp01(sfxVolume01_100 / 100f);
+-        float musicLinear = Mathf.Clamp01(musicVolume01_100 / 100f);
+-
+-        float sfxDb = LinearToDb(sfxLinear);
+-        float musicDb = LinearToDb(musicLinear);
+-
+-        audioMixer.SetFloat(sfxMixerParam, sfxDb);
+-        audioMixer.SetFloat(musicMixerParam, musicDb);
+-    }
+-
+-    private float LinearToDb(float linear)
+-    {
+-        // 0 => silencio real, lo forzamos a -80dB aprox
+-        if (linear <= 0.0001f) return -80f;
+-        return Mathf.Log10(linear) * 20f;
++        audioMixer.SetFloat(sfxMixerParam, LinearToDb(sfxVolume01_100 / 100f));
++        audioMixer.SetFloat(musicMixerParam, LinearToDb(musicVolume01_100 / 100f));
+     }
+ 
+-    private void RefreshAudioUI()
++    private float LinearToDb(float v)
+     {
+-        if (sfxText != null) sfxText.text = $"Efectos: {sfxVolume01_100}";
+-        if (musicText != null) musicText.text = $"Musica: {musicVolume01_100}";
++        if (v <= 0.0001f) return -80f;
++        return Mathf.Log10(v) * 20f;
+     }
+ 
+     // =========================
+-    // VIDEO (preview)
++    // VIDEO NAVIGATION
+     // =========================
+ 
+     public void ResolutionLeft()
+     {
+-        if (availableResolutions.Count == 0) return;
+-        pendingResolutionIndex = (pendingResolutionIndex - 1 + availableResolutions.Count) % availableResolutions.Count;
++        if (IsAndroid)
++        {
++            pendingAndroidResIndex =
++                (pendingAndroidResIndex - 1 + androidResolutionPercents.Length) %
++                androidResolutionPercents.Length;
++        }
++        else
++        {
++            pendingResolutionIndex =
++                (pendingResolutionIndex - 1 + availableResolutions.Count) %
++                availableResolutions.Count;
++        }
++
+         RefreshVideoUI();
+     }
+ 
+     public void ResolutionRight()
+     {
+-        if (availableResolutions.Count == 0) return;
+-        pendingResolutionIndex = (pendingResolutionIndex + 1) % availableResolutions.Count;
++        if (IsAndroid)
++        {
++            pendingAndroidResIndex =
++                (pendingAndroidResIndex + 1) % androidResolutionPercents.Length;
++        }
++        else
++        {
++            pendingResolutionIndex =
++                (pendingResolutionIndex + 1) % availableResolutions.Count;
++        }
++
+         RefreshVideoUI();
+     }
+ 
+     public void ToggleFullscreen()
+     {
++        if (IsAndroid) return;
+         pendingFullscreen = !pendingFullscreen;
+         RefreshVideoUI();
+     }
+@@ -218,74 +259,102 @@ public class JamOptionsMenu : MonoBehaviour
+ 
+     public void ApplyVideo()
+     {
+-        // Guardamos pendientes como aplicados
+-        appliedResolutionIndex = pendingResolutionIndex;
+-        appliedFullscreen = pendingFullscreen;
+-        appliedVsync = pendingVsync;
++        if (IsAndroid)
++        {
++            appliedAndroidResIndex = pendingAndroidResIndex;
++            ApplyAndroidResolutionScale();
++        }
++        else
++        {
++            appliedResolutionIndex = pendingResolutionIndex;
++            appliedFullscreen = pendingFullscreen;
++            appliedVsync = pendingVsync;
++            ApplyVideoNow();
++        }
+ 
+-        ApplyVideoNow();
+         SaveAll();
+         RefreshVideoUI();
+     }
+ 
+-    public void DiscardVideoChanges()
+-    {
+-        // Revierte el preview a lo aplicado (ideal para "Volver")
+-        CopyAppliedToPending();
+-        RefreshVideoUI();
+-    }
+-
+     private void ApplyVideoNow()
+     {
+-        if (availableResolutions.Count == 0)
+-        {
+-            ReadCurrentSystemVideoAsApplied();
+-            CopyAppliedToPending();
+-            RefreshVideoUI();
+-            return;
+-        }
++        if (IsAndroid) return;
+ 
+-        Resolution r = availableResolutions[Mathf.Clamp(appliedResolutionIndex, 0, availableResolutions.Count - 1)];
++        Resolution r = availableResolutions[appliedResolutionIndex];
+ 
+-        // Fullscreen mode simple para jam
+         Screen.fullScreen = appliedFullscreen;
+ 
+ #if !UNITY_WEBGL
+-    // Aplicar resolución (NO en WebGL porque rompe el canvas / escala en itch)
+-    Screen.SetResolution(
+-        r.width,
+-        r.height,
+-        (appliedFullscreen) ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed,
+-        r.refreshRateRatio
+-    );
++        Screen.SetResolution(
++            r.width,
++            r.height,
++            appliedFullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed,
++            r.refreshRateRatio
++        );
+ #endif
+ 
+-        // VSync
+         QualitySettings.vSyncCount = appliedVsync ? 1 : 0;
++    }
+ 
+-        RefreshVideoUI();
++    // =========================
++    // ANDROID RESOLUTION
++    // =========================
++
++    private void ApplyAndroidResolutionScale()
++    {
++        var urp = UniversalRenderPipeline.asset;
++        if (!urp) return;
++
++        int percent = androidResolutionPercents[appliedAndroidResIndex];
++        urp.renderScale = percent / 100f;
++    }
++
++    private Vector2Int GetAndroidLandscapeResolution()
++    {
++        int w = Screen.width;
++        int h = Screen.height;
++        if (h > w) (w, h) = (h, w);
++        return new Vector2Int(w, h);
++    }
++
++    private string GetAndroidResolutionText(int percent)
++    {
++        Vector2Int baseRes = GetAndroidLandscapeResolution();
++        int w = Mathf.RoundToInt(baseRes.x * percent / 100f);
++        int h = Mathf.RoundToInt(baseRes.y * percent / 100f);
++        return $"{w} x {h} ({percent}%)";
++    }
++
++    // =========================
++    // UI
++    // =========================
++
++    private void RefreshAudioUI()
++    {
++        if (sfxText) sfxText.text = $"Efectos: {sfxVolume01_100}";
++        if (musicText) musicText.text = $"Musica: {musicVolume01_100}";
+     }
+ 
+     private void RefreshVideoUI()
+     {
+-        if (resolutionText != null)
++        if (resolutionText)
+         {
+-            if (availableResolutions.Count > 0)
++            if (IsAndroid)
++                resolutionText.text = GetAndroidResolutionText(
++                    androidResolutionPercents[pendingAndroidResIndex]);
++            else
+             {
+-                Resolution r = availableResolutions[Mathf.Clamp(pendingResolutionIndex, 0, availableResolutions.Count - 1)];
++                Resolution r = availableResolutions[pendingResolutionIndex];
+                 int hz = Mathf.RoundToInt((float)r.refreshRateRatio.value);
+                 resolutionText.text = $"{r.width} x {r.height} {hz}Hz";
+             }
+-            else
+-            {
+-                resolutionText.text = "Resolucion: N/A";
+-            }
+         }
+ 
+-        if (fullscreenText != null)
+-            fullscreenText.text = $"Pantalla Completa: {(pendingFullscreen ? "Si" : "No")}";
++        if (fullscreenText)
++            fullscreenText.text = IsAndroid ? "Pantalla Completa: Si" :
++                $"Pantalla Completa: {(pendingFullscreen ? "Si" : "No")}";
+ 
+-        if (vsyncText != null)
++        if (vsyncText)
+             vsyncText.text = $"VSync: {(pendingVsync ? "Si" : "No")}";
+     }
+ 
+@@ -296,61 +365,35 @@ public class JamOptionsMenu : MonoBehaviour
+     }
+ 
+     // =========================
+-    // RESOLUTIONS
++    // PC RESOLUTION UTILS
+     // =========================
+ 
+     private void BuildResolutionList()
+     {
+         availableResolutions.Clear();
+-
+-        // Screen.resolutions suele venir con duplicados (mismos WxH con Hz distintos)
+-        // Los guardamos tal cual, porque vos querés mostrar Hz también.
+-        Resolution[] res = Screen.resolutions;
+-
+-        if (res != null && res.Length > 0)
+-            availableResolutions.AddRange(res);
+-
+-        if (availableResolutions.Count == 0)
+-        {
+-            // fallback mínimo
+-            Resolution fallback = new Resolution
+-            {
+-                width = Screen.currentResolution.width,
+-                height = Screen.currentResolution.height,
+-                refreshRateRatio = Screen.currentResolution.refreshRateRatio
+-            };
+-            availableResolutions.Add(fallback);
+-        }
++        availableResolutions.AddRange(Screen.resolutions);
+     }
+ 
+     private int GetClosestResolutionIndexToCurrent()
+     {
+-        if (availableResolutions.Count == 0) return 0;
+-
+-        int bestIndex = 0;
+-        int bestScore = int.MaxValue;
+-
+-        int curW = Screen.currentResolution.width;
+-        int curH = Screen.currentResolution.height;
+-        int curHz = Mathf.RoundToInt((float)Screen.currentResolution.refreshRateRatio.value);
++        int best = 0;
++        int score = int.MaxValue;
+ 
+         for (int i = 0; i < availableResolutions.Count; i++)
+         {
+             Resolution r = availableResolutions[i];
+-            int hz = Mathf.RoundToInt((float)r.refreshRateRatio.value);
++            int s =
++                Mathf.Abs(r.width - Screen.currentResolution.width) * 10 +
++                Mathf.Abs(r.height - Screen.currentResolution.height) * 10;
+ 
+-            int score = Mathf.Abs(r.width - curW) * 10
+-                      + Mathf.Abs(r.height - curH) * 10
+-                      + Mathf.Abs(hz - curHz);
+-
+-            if (score < bestScore)
++            if (s < score)
+             {
+-                bestScore = score;
+-                bestIndex = i;
++                score = s;
++                best = i;
+             }
+         }
+ 
+-        return bestIndex;
++        return best;
+     }
+ 
+     private void ReadCurrentSystemVideoAsApplied()
+@@ -367,16 +410,44 @@ public class JamOptionsMenu : MonoBehaviour
+         pendingVsync = appliedVsync;
+     }
+ 
+-    // =========================
+-    // EXTRA (para botón volver)
+-    // =========================
++    void ApplyPlatformRules()
++    {
++#if UNITY_ANDROID
++        ApplyAndroidLayout();
++#else
++        ApplyDesktopLayout();
++#endif
++    }
+ 
+-    /// <summary>
+-    /// Llamalo desde el botón "Volver" ANTES de cambiar de escena/menu.
+-    /// Revierte cambios de video que no se aplicaron.
+-    /// </summary>
+-    public void OnBackToMenuDiscardVideoIfPending()
++    void ApplyAndroidLayout()
+     {
+-        DiscardVideoChanges();
++        // Ocultar Pantalla Completa
++        if (fullscreenContainer != null)
++            fullscreenContainer.SetActive(false);
++
++        // Navigation: VSync ↓ -> Aplicar
++        if (vSyncSelectable != null && applySelectable != null)
++        {
++            var nav = vSyncSelectable.navigation;
++            nav.mode = Navigation.Mode.Explicit;
++            nav.selectOnDown = applySelectable;
++            vSyncSelectable.navigation = nav;
++        }
++    }
++
++    void ApplyDesktopLayout()
++    {
++        // Mostrar Pantalla Completa
++        if (fullscreenContainer != null)
++            fullscreenContainer.SetActive(true);
++
++        // Navigation: VSync ↓ -> Pantalla Completa
++        if (vSyncSelectable != null && fullscreenSelectable != null)
++        {
++            var nav = vSyncSelectable.navigation;
++            nav.mode = Navigation.Mode.Explicit;
++            nav.selectOnDown = fullscreenSelectable;
++            vSyncSelectable.navigation = nav;
++        }
+     }
+ }
+diff --git a/Assets/Code/UI/UIControlPrompt.cs b/Assets/Code/UI/UIControlPrompt.cs
+index 778173c..e1e7fbe 100644
+--- a/Assets/Code/UI/UIControlPrompt.cs
++++ b/Assets/Code/UI/UIControlPrompt.cs
+@@ -1,8 +1,7 @@
+-using System;
+ using System.Linq;
+ using UnityEngine;
+-using UnityEngine.InputSystem;
+ using UnityEngine.UI;
++using UnityEngine.InputSystem;
+ 
+ namespace Code.UI
+ {
+@@ -12,22 +11,70 @@ namespace Code.UI
+         public bool autoStart = true;
+         public string autoStartAction = "ActionName";
+ 
+-        private void Start()
++        [SerializeField] string currentAction;
++        [SerializeField] string currentBinding;
++
++        void OnEnable()
+         {
+-            if(autoStart) { ShowActionPrompt(autoStartAction); }
++            if (ControllerManager.state != null)
++            {
++                ControllerManager.state.OnDeviceChanged += RefreshPrompt;
++            }
++        }
++
++        void OnDisable()
++        {
++            if (ControllerManager.state != null)
++            {
++                ControllerManager.state.OnDeviceChanged -= RefreshPrompt;
++            }
++        }
++
++        void Start()
++        {
++            if (autoStart)
++            {
++                ShowActionPrompt(autoStartAction);
++            }
+         }
+ 
+         public void ShowActionPrompt(string actionName)
+         {
+-            if(ControllerManager.state != null)
++            currentAction = actionName;
++            RefreshPrompt();
++        }
++
++        void RefreshPrompt()
++        {
++            if (ControllerManager.state == null) return;
++            if (string.IsNullOrEmpty(currentAction)) return;
++
++            var playerInput = ControllerManager.state.playerImput;
++            var action = playerInput.actions[currentAction];
++
++            var bindingIndex = action.GetBindingIndex(
++                InputBinding.MaskByGroup(playerInput.currentControlScheme)
++            );
++
++            currentBinding = bindingIndex.ToString();
++
++            if (bindingIndex < 0)
+             {
+-                var action = ControllerManager.state.playerImput.actions[actionName];
+-                var bindingIndex = action.GetBindingIndex(InputBinding.MaskByGroup(ControllerManager.state.playerImput.currentControlScheme));
+-                action.GetBindingDisplayString(bindingIndex, out var deviceLayout, out string controlPath);
+-                var a = ControllerManager.state.currentIconSet.Buttons;
+-                promptImage.sprite = a.FirstOrDefault(b => b.path == controlPath)?.sprite;
+-                promptImage.enabled = (true);
++                promptImage.enabled = false;
++                return;
+             }
++
++            action.GetBindingDisplayString(
++                bindingIndex,
++                out var deviceLayout,
++                out string controlPath
++            );
++
++            var iconSet = ControllerManager.state.currentIconSet;
++            var icon = iconSet.Buttons.FirstOrDefault(b => b.path == controlPath);
++
++            promptImage.sprite = icon?.sprite;
++            promptImage.enabled = icon != null;
+         }
+     }
+ }
+diff --git a/Assets/InputSystem_Actions.inputactions b/Assets/InputSystem_Actions.inputactions
+index a375d05..9f6b220 100644
+--- a/Assets/InputSystem_Actions.inputactions
++++ b/Assets/InputSystem_Actions.inputactions
+@@ -203,6 +203,17 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "3d0a22bb-1d32-4c3c-b249-1a95288680a0",
++                    "path": "<DualShock4GamepadAndroid>/leftStick",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "c09e57d9-ace6-4d07-a00c-0d9c84d78ff9",
+@@ -214,6 +225,28 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "14a19684-3081-49d0-9374-06f3695327f2",
++                    "path": "<XboxOneGamepadAndroid>/leftStick",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "",
++                    "id": "0881ffa3-0d3f-4d09-89ea-cd5175d97d07",
++                    "path": "<XboxOneGampadiOS>/leftStick",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "67ac5d9d-7f48-4259-b85c-15cc4104a88d",
+@@ -280,6 +313,116 @@
+                     "isComposite": false,
+                     "isPartOfComposite": true
+                 },
++                {
++                    "name": "Dpad Xbox Android",
++                    "id": "21f19fee-4a96-4919-aee0-05052f955ad0",
++                    "path": "2DVector",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": "",
++                    "action": "Move",
++                    "isComposite": true,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "up",
++                    "id": "cfc66bcd-2045-42c6-8346-0ef37cc4d4fc",
++                    "path": "<XboxOneGamepadAndroid>/dpad/up",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "down",
++                    "id": "dc4e0f8e-54cf-416c-bc42-2b2602bc10e7",
++                    "path": "<XboxOneGamepadAndroid>/dpad/down",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "left",
++                    "id": "aa7f3e37-a688-413b-bda7-a548a2ea354b",
++                    "path": "<XboxOneGamepadAndroid>/dpad/left",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "right",
++                    "id": "04015614-808d-44fd-aba7-a02fc65df6bf",
++                    "path": "<XboxOneGamepadAndroid>/dpad/right",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "Dpad Xbox IOS",
++                    "id": "da82e35e-b29d-43c5-8a0c-cad5df628934",
++                    "path": "2DVector",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": "",
++                    "action": "Move",
++                    "isComposite": true,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "up",
++                    "id": "d9bb79f1-39f2-4577-a510-5f24f181b8e3",
++                    "path": "<XboxOneGampadiOS>/dpad/up",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "down",
++                    "id": "ed8544b3-d639-4b31-80b2-2210709ac269",
++                    "path": "<XboxOneGampadiOS>/dpad/down",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "left",
++                    "id": "e15c3862-40d6-40bb-8d7d-8fc716bec11a",
++                    "path": "<XboxOneGampadiOS>/dpad/left",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "right",
++                    "id": "0f79e7d4-fdd0-4fb0-953d-63be4373d5b5",
++                    "path": "<XboxOneGampadiOS>/dpad/right",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
+                 {
+                     "name": "Dpad Switch",
+                     "id": "34bf6f45-c71f-43b7-ae22-cfe326dd4839",
+@@ -390,6 +533,61 @@
+                     "isComposite": false,
+                     "isPartOfComposite": true
+                 },
++                {
++                    "name": "Dpad Playstation",
++                    "id": "9f0c4cb0-aaf6-46e3-82c6-7d9342ce0737",
++                    "path": "2DVector",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": "",
++                    "action": "Move",
++                    "isComposite": true,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "up",
++                    "id": "787b975b-8e60-4e97-9306-64b8b7438bc9",
++                    "path": "<DualShock4GamepadAndroid>/dpad/up",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "down",
++                    "id": "4b7f223a-b6a9-4290-9912-57ab62b9e5f0",
++                    "path": "<DualShock4GamepadAndroid>/dpad/down",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "left",
++                    "id": "799d30a1-df50-4701-91ad-61b0320e47c1",
++                    "path": "<DualShock4GamepadAndroid>/dpad/left",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
++                {
++                    "name": "right",
++                    "id": "b54bb56b-71db-486e-8bbb-a1f27e3fdad8",
++                    "path": "<DualShock4GamepadAndroid>/dpad/right",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Move",
++                    "isComposite": false,
++                    "isPartOfComposite": true
++                },
+                 {
+                     "name": "Dpad Gamepad",
+                     "id": "8d0e7e29-df6c-4d86-9184-0bf5288c0b36",
+@@ -511,6 +709,17 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "efbbe9b6-8c2a-4ec9-8fab-3da515916515",
++                    "path": "<DualShock4GamepadAndroid>/buttonWest",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Action",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "99cbe0be-2a15-49eb-a424-c2fb82f27368",
+@@ -533,6 +742,28 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "e6ef6f6f-9cc6-49c8-9599-fbc6489cae51",
++                    "path": "<XboxOneGamepadAndroid>/buttonWest",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Action",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "",
++                    "id": "c6916e3f-b842-4899-9911-f5196b45bb05",
++                    "path": "<XboxOneGampadiOS>/buttonWest",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Action",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "f03335a6-b079-4d8e-831e-5ac52a860406",
+@@ -544,6 +775,28 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "3e1c5a77-b71c-4dcf-8149-d512c03de367",
++                    "path": "<XboxOneGamepadAndroid>/buttonSouth",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Accept",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "",
++                    "id": "284ed1ab-3e0c-477d-8149-881b8a67d841",
++                    "path": "<XboxOneGampadiOS>/buttonSouth",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Accept",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "9825baf4-e0fb-4515-bbf7-c3b16a197f3a",
+@@ -599,6 +852,17 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "2d45b93d-b915-4d8b-ac9a-f92df1c35e92",
++                    "path": "<DualShock4GamepadAndroid>/buttonSouth",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Accept",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "99d3fdf0-78be-4f85-9624-8bbe335175d0",
+@@ -654,6 +918,17 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "cd75114f-ca70-40f4-92c0-f1fef0129fe7",
++                    "path": "<DualShock4GamepadAndroid>/buttonEast",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Cancel",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "86014060-674e-46d6-8af0-3d830e140f4a",
+@@ -665,6 +940,28 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "10bc68c0-d05f-43a1-b94f-a3d4ae2c48e9",
++                    "path": "<XboxOneGamepadAndroid>/buttonEast",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Cancel",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "",
++                    "id": "bb405676-e174-4c5b-ab98-a94f967d8a15",
++                    "path": "<XboxOneGampadiOS>/buttonEast",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Cancel",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "ccbd5dc1-8511-4076-ae2f-d228bf9b31d2",
+@@ -709,6 +1006,17 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "b2b60c1c-571c-4ac8-84af-f4458e0b5dd9",
++                    "path": "<DualShock4GamepadAndroid>/start",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Pausa",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "935c938c-dfbd-4c3d-99f0-d7304346cfc5",
+@@ -720,6 +1028,28 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "aa88a7fd-add0-485e-84a8-950eda16116a",
++                    "path": "<XboxOneGamepadAndroid>/start",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Pausa",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "",
++                    "id": "38260463-816b-4fec-ab00-bdda07dc6c82",
++                    "path": "<XboxOneGampadiOS>/start",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Pausa",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "c0561956-c68e-4602-a10d-c70233b4c68d",
+@@ -775,6 +1105,17 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "1e1657fe-99e8-4f11-b37d-c7c99e144748",
++                    "path": "<DualShock4GamepadAndroid>/buttonSouth",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Jump",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "bb98af69-cc7e-4ae3-adbd-a5eccefaa999",
+@@ -786,6 +1127,28 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "92a4d3a8-889f-4fc4-ab55-f4416f02e87a",
++                    "path": "<XboxOneGamepadAndroid>/buttonSouth",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Jump",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "",
++                    "id": "448b7064-4701-45aa-8bee-ae615852416d",
++                    "path": "<XboxOneGampadiOS>/buttonSouth",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Jump",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "6e6676e3-2a2a-42ea-b0d6-cc6ca02c38a3",
+@@ -841,6 +1204,17 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "36019c8f-2fb6-4050-9b8e-a6a47d70c743",
++                    "path": "<DualShock4GamepadAndroid>/buttonNorth",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Playstation",
++                    "action": "Mask Toggle",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "2f06c9a7-9c00-4295-b3cd-a0c6e94e766c",
+@@ -852,6 +1226,28 @@
+                     "isComposite": false,
+                     "isPartOfComposite": false
+                 },
++                {
++                    "name": "",
++                    "id": "3c9fcec0-2533-4ed2-ab1c-cba80d617505",
++                    "path": "<XboxOneGamepadAndroid>/buttonSouth",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Mask Toggle",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
++                {
++                    "name": "",
++                    "id": "465e798c-d6aa-4d8d-bcb8-f184111a4382",
++                    "path": "<XboxOneGampadiOS>/buttonSouth",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": ";Xbox",
++                    "action": "Mask Toggle",
++                    "isComposite": false,
++                    "isPartOfComposite": false
++                },
+                 {
+                     "name": "",
+                     "id": "60fbbc04-30d8-4a4b-a3b7-0e628bccb5eb",
+@@ -1442,6 +1838,17 @@
+                     "action": "MousePosition",
+                     "isComposite": false,
+                     "isPartOfComposite": false
++                },
++                {
++                    "name": "",
++                    "id": "4ebea332-f312-4a36-a405-ae913368ba92",
++                    "path": "*/{Point}",
++                    "interactions": "",
++                    "processors": "",
++                    "groups": "",
++                    "action": "MousePosition",
++                    "isComposite": false,
++                    "isPartOfComposite": false
+                 }
+             ]
+         }
+@@ -1487,6 +1894,11 @@
+                     "devicePath": "<DualShockGamepad>",
+                     "isOptional": false,
+                     "isOR": false
++                },
++                {
++                    "devicePath": "<DualShock4GamepadAndroid>",
++                    "isOptional": false,
++                    "isOR": false
+                 }
+             ]
+         },
+diff --git a/Assets/Prefabs/UI/DialogSystem.prefab b/Assets/Prefabs/UI/DialogSystem.prefab
+index f88cc78..828af6e 100644
+--- a/Assets/Prefabs/UI/DialogSystem.prefab
++++ b/Assets/Prefabs/UI/DialogSystem.prefab
+@@ -1003,7 +1003,7 @@ MonoBehaviour:
+   m_ScaleFactor: 1
+   m_ReferenceResolution: {x: 1920, y: 1080}
+   m_ScreenMatchMode: 0
+-  m_MatchWidthOrHeight: 0
++  m_MatchWidthOrHeight: 1
+   m_PhysicalUnit: 3
+   m_FallbackScreenDPI: 96
+   m_DefaultSpriteDPI: 96
+diff --git a/Assets/Resources/BuildData.asset b/Assets/Resources/BuildData.asset
+index 5fe27c7..5e129c5 100644
+--- a/Assets/Resources/BuildData.asset
++++ b/Assets/Resources/BuildData.asset
+@@ -13,8 +13,8 @@ MonoBehaviour:
+   m_Name: BuildData
+   m_EditorClassIdentifier: Assembly-CSharp::BuildScriptableData
+   GameVersionText: GGJAM 2026
+-  GameVersion: 1.5.4
+-  GameBuild: 25
+-  GameExportDate: 3/2/2026
+-  GameExportPlataform: Linux64
++  GameVersion: 1.5.9
++  GameBuild: 32
++  GameExportDate: 7/2/2026
++  GameExportPlataform: Android
+   UnityVersion: Unity 6000.3.5f2
+diff --git a/Assets/Scenes/Intro.unity b/Assets/Scenes/Intro.unity
+index e66de2a..d6569a3 100644
+--- a/Assets/Scenes/Intro.unity
++++ b/Assets/Scenes/Intro.unity
+@@ -6951,6 +6951,10 @@ PrefabInstance:
+       propertyPath: m_Name
+       value: DialogSystem
+       objectReference: {fileID: 0}
++    - target: {fileID: 7727626432404993330, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
++      propertyPath: m_IsActive
++      value: 1
++      objectReference: {fileID: 0}
+     - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+       propertyPath: dialogueAnimator
+       value: 
+diff --git a/Assets/Scenes/Menu.unity b/Assets/Scenes/Menu.unity
+index ca773f6..5eec86e 100644
+--- a/Assets/Scenes/Menu.unity
++++ b/Assets/Scenes/Menu.unity
+@@ -1682,7 +1682,7 @@ GameObject:
+   - component: {fileID: 262514880}
+   - component: {fileID: 262514879}
+   m_Layer: 5
+-  m_Name: Back (1)
++  m_Name: Back Button
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+   m_NavMeshLayer: 0
+@@ -3300,9 +3300,9 @@ MonoBehaviour:
+   m_XRTrackingOrigin: {fileID: 0}
+   m_ActionsAsset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+   m_PointAction: {fileID: 2065553887}
+-  m_MoveAction: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+-  m_SubmitAction: {fileID: 7476244043514120974, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+-  m_CancelAction: {fileID: -3341359437889196833, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
++  m_MoveAction: {fileID: -8784545083839296357, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
++  m_SubmitAction: {fileID: 392368643174621059, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
++  m_CancelAction: {fileID: 7727032971491509709, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+   m_LeftClickAction: {fileID: 1328648594}
+   m_MiddleClickAction: {fileID: 830174494}
+   m_RightClickAction: {fileID: 453683699}
+@@ -3325,7 +3325,7 @@ MonoBehaviour:
+   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+   m_Name: 
+   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
+-  m_FirstSelected: {fileID: 0}
++  m_FirstSelected: {fileID: 5187294301754079166}
+   m_sendNavigationEvents: 1
+   m_DragThreshold: 10
+ --- !u!4 &578211746
+@@ -3513,7 +3513,7 @@ GameObject:
+   - component: {fileID: 650630408}
+   - component: {fileID: 650630407}
+   m_Layer: 5
+-  m_Name: Title (1)
++  m_Name: Separator
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+   m_NavMeshLayer: 0
+@@ -3588,7 +3588,7 @@ GameObject:
+   - component: {fileID: 656844047}
+   - component: {fileID: 656844046}
+   m_Layer: 5
+-  m_Name: Title (2)
++  m_Name: Title Pantalla
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+   m_NavMeshLayer: 0
+@@ -4479,7 +4479,7 @@ GameObject:
+   - component: {fileID: 818422015}
+   - component: {fileID: 818422014}
+   m_Layer: 5
+-  m_Name: AplicarResolucion
++  m_Name: Aply Button
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+   m_NavMeshLayer: 0
+@@ -4651,7 +4651,7 @@ GameObject:
+   - component: {fileID: 850587585}
+   - component: {fileID: 850587584}
+   m_Layer: 5
+-  m_Name: VSinc
++  m_Name: VSync Button
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+   m_NavMeshLayer: 0
+@@ -4784,7 +4784,7 @@ GameObject:
+   - component: {fileID: 928467242}
+   - component: {fileID: 928467241}
+   m_Layer: 5
+-  m_Name: FullScreen
++  m_Name: FullScreen Button
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+   m_NavMeshLayer: 0
+@@ -5731,10 +5731,10 @@ RectTransform:
+   - {fileID: 262514878}
+   m_Father: {fileID: 3545752585259342657}
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+-  m_AnchorMin: {x: 0, y: 1}
+-  m_AnchorMax: {x: 0, y: 1}
+-  m_AnchoredPosition: {x: 960, y: -589.56}
+-  m_SizeDelta: {x: 979.54, y: 853.45}
++  m_AnchorMin: {x: 0.5, y: 0.5}
++  m_AnchorMax: {x: 0.5, y: 0.5}
++  m_AnchoredPosition: {x: 0, y: 0}
++  m_SizeDelta: {x: 979.54004, y: 853.45}
+   m_Pivot: {x: 0.5, y: 0.5}
+ --- !u!114 &1300515994
+ MonoBehaviour:
+@@ -6888,7 +6888,7 @@ GameObject:
+   - component: {fileID: 1638186555}
+   - component: {fileID: 1638186554}
+   m_Layer: 5
+-  m_Name: Resolucion
++  m_Name: Resolucion Block
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+   m_NavMeshLayer: 0
+@@ -7447,25 +7447,101 @@ PrefabInstance:
+       value: 
+       objectReference: {fileID: 578211744}
+     - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+-      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.size
++      propertyPath: m_DefaultControlScheme
++      value: Keyboard
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.size
+       value: 2
+       objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.size
++      value: 1
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.size
++      value: 1
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
++      value: 1
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
++      value: 1
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
++      value: 
++      objectReference: {fileID: 1706384869}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
++      value: 1
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
++      value: 1
++      objectReference: {fileID: 0}
+     - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+       propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+       value: 5
+       objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
++      value: 2
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
++      value: 2
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
++      value: DiviceChangedFunction
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
++      value: 
++      objectReference: {fileID: 1706384869}
+     - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+       propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+       value: 
+       objectReference: {fileID: 395514241086529585}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
++      value: 2
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
++      value: 2
++      objectReference: {fileID: 0}
+     - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+       propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+       value: 2
+       objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
++      value: DiviceChangedFunction
++      objectReference: {fileID: 0}
+     - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+       propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+       value: ShowActionPrompt
+       objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
++      value: ControllerManager, Assembly-CSharp
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
++      value: ControllerManager, Assembly-CSharp
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
++      value: ControllerManager, Assembly-CSharp
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
++      value: ControllerManager, Assembly-CSharp
++      objectReference: {fileID: 0}
+     - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+       propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+       value: Code.UI.UIControlPrompt, Assembly-CSharp
+@@ -7474,10 +7550,22 @@ PrefabInstance:
+       propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
+       value: Accept
+       objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceLostEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
++      value: UnityEngine.Object, UnityEngine
++      objectReference: {fileID: 0}
++    - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: m_DeviceRegainedEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
++      value: UnityEngine.Object, UnityEngine
++      objectReference: {fileID: 0}
+     - target: {fileID: 371864206393577793, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+       propertyPath: m_ControlsChangedEvent.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+       value: UnityEngine.Object, UnityEngine
+       objectReference: {fileID: 0}
++    - target: {fileID: 2426592899520009097, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
++      propertyPath: ImputDivece
++      value: 3
++      objectReference: {fileID: 0}
+     - target: {fileID: 2426592899520009097, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+       propertyPath: BlockedControllers
+       value: 0
+@@ -12757,7 +12845,7 @@ GameObject:
+   - component: {fileID: 1941589515}
+   - component: {fileID: 1941589514}
+   m_Layer: 5
+-  m_Name: Title
++  m_Name: Title Sonido
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+   m_NavMeshLayer: 0
+@@ -13089,11 +13177,11 @@ Transform:
+   m_GameObject: {fileID: 2070849610}
+   serializedVersion: 2
+   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+-  m_LocalPosition: {x: -2.100002, y: 155.52025, z: -9719.999}
+-  m_LocalScale: {x: 71.504906, y: 71.504906, z: 71.504906}
++  m_LocalPosition: {x: 13.96083, y: 130.9556, z: 2.2444077}
++  m_LocalScale: {x: 0.6455716, y: 0.6455716, z: 0.6455716}
+   m_ConstrainProportionsScale: 0
+   m_Children: []
+-  m_Father: {fileID: 3295318623780661976}
++  m_Father: {fileID: 2406780985270091722}
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+ --- !u!114 &2070849613
+ MonoBehaviour:
+@@ -13528,7 +13616,7 @@ Canvas:
+   serializedVersion: 3
+   m_RenderMode: 1
+   m_Camera: {fileID: 813312592}
+-  m_PlaneDistance: 100
++  m_PlaneDistance: 20
+   m_PixelPerfect: 0
+   m_ReceivesEvents: 1
+   m_OverrideSorting: 0
+@@ -13571,6 +13659,8 @@ MonoBehaviour:
+   promptImage: {fileID: 3761090789554673452}
+   autoStart: 1
+   autoStartAction: Accept
++  currentAction: 
++  currentBinding: 
+ --- !u!4 &463512801778335416
+ Transform:
+   m_ObjectHideFlags: 0
+@@ -13758,7 +13848,7 @@ RectTransform:
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+   m_AnchorMin: {x: 0, y: 0}
+   m_AnchorMax: {x: 1, y: 0.5}
+-  m_AnchoredPosition: {x: 0, y: -37.179993}
++  m_AnchoredPosition: {x: 0, y: -37.180054}
+   m_SizeDelta: {x: 0, y: -74.34}
+   m_Pivot: {x: 0.5, y: 0.5}
+ --- !u!114 &859762048567390211
+@@ -14295,6 +14385,7 @@ Transform:
+   m_LocalScale: {x: 1, y: 1, z: 1}
+   m_ConstrainProportionsScale: 0
+   m_Children:
++  - {fileID: 2070849612}
+   - {fileID: 3295318623780661976}
+   m_Father: {fileID: 0}
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+@@ -14428,10 +14519,10 @@ RectTransform:
+   m_Children: []
+   m_Father: {fileID: 524304410}
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+-  m_AnchorMin: {x: 0, y: 1}
+-  m_AnchorMax: {x: 0, y: 1}
+-  m_AnchoredPosition: {x: 227.97, y: -38.380005}
+-  m_SizeDelta: {x: 0, y: 66.76}
++  m_AnchorMin: {x: 0, y: 0}
++  m_AnchorMax: {x: 0, y: 0}
++  m_AnchoredPosition: {x: 227.97, y: 0}
++  m_SizeDelta: {x: 84.1176, y: 66.76}
+   m_Pivot: {x: 0.5, y: 0.5}
+ --- !u!114 &2769880115353156941
+ MonoBehaviour:
+@@ -14806,7 +14897,6 @@ RectTransform:
+   m_LocalScale: {x: 0, y: 0, z: 0}
+   m_ConstrainProportionsScale: 0
+   m_Children:
+-  - {fileID: 2070849612}
+   - {fileID: 3545752585259342657}
+   - {fileID: 2224713728705350614}
+   - {fileID: 698175038039823896}
+@@ -15635,7 +15725,7 @@ MonoBehaviour:
+   m_ScaleFactor: 1
+   m_ReferenceResolution: {x: 1920, y: 1080}
+   m_ScreenMatchMode: 0
+-  m_MatchWidthOrHeight: 0
++  m_MatchWidthOrHeight: 1
+   m_PhysicalUnit: 3
+   m_FallbackScreenDPI: 96
+   m_DefaultSpriteDPI: 96
+@@ -16692,6 +16782,10 @@ MonoBehaviour:
+   sfxTestClip: {fileID: 8300000, guid: 6ba6b2136fa6ea64db9519a43cd5fe6d, type: 3}
+   musicTestClip: {fileID: 8300000, guid: b6d42c458df7f814e877402982da6d70, type: 3}
+   volumeStep: 5
++  fullscreenContainer: {fileID: 928467239}
++  vSyncSelectable: {fileID: 850587584}
++  fullscreenSelectable: {fileID: 928467241}
++  applySelectable: {fileID: 818422014}
+ --- !u!82 &9031171153454104202
+ AudioSource:
+   m_ObjectHideFlags: 0
+diff --git a/ProjectSettings/ProjectSettings.asset b/ProjectSettings/ProjectSettings.asset
+index acb05b2..ae69cfd 100644
+--- a/ProjectSettings/ProjectSettings.asset
++++ b/ProjectSettings/ProjectSettings.asset
+@@ -8,7 +8,7 @@ PlayerSettings:
+   AndroidProfiler: 0
+   AndroidFilterTouchesWhenObscured: 0
+   AndroidEnableSustainedPerformanceMode: 0
+-  defaultScreenOrientation: 4
++  defaultScreenOrientation: 2
+   targetDevice: 2
+   useOnDemandResources: 0
+   accelerometerFrequency: 60
+@@ -143,7 +143,7 @@ PlayerSettings:
+   loadStoreDebugModeEnabled: 0
+   visionOSBundleVersion: 1.0
+   tvOSBundleVersion: 1.0
+-  bundleVersion: 1.5.4
++  bundleVersion: 1.5.9
+   preloadedAssets:
+   - {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+   metroInputSource: 0
+@@ -500,6 +500,9 @@ PlayerSettings:
+   - m_BuildTarget: WebGL
+     m_StaticBatching: 0
+     m_DynamicBatching: 0
++  - m_BuildTarget: Android
++    m_StaticBatching: 1
++    m_DynamicBatching: 0
+   m_BuildTargetShaderSettings: []
+   m_BuildTargetGraphicsJobs: []
+   m_BuildTargetGraphicsJobMode: []
+diff --git a/ProjectSettings/UnityConnectSettings.asset b/ProjectSettings/UnityConnectSettings.asset
+index 029ad8b..7a17e8f 100644
+--- a/ProjectSettings/UnityConnectSettings.asset
++++ b/ProjectSettings/UnityConnectSettings.asset
+@@ -4,7 +4,7 @@
+ UnityConnectSettings:
+   m_ObjectHideFlags: 0
+   serializedVersion: 1
+-  m_Enabled: 0
++  m_Enabled: 1
+   m_TestMode: 0
+   m_EventOldUrl: https://api.uca.cloud.unity3d.com/v1/events
+   m_EventUrl: https://cdp.cloud.unity3d.com/v1/events

@@ -84,10 +84,18 @@ PrefabInstance:
       propertyPath: m_Tiles.Array.data[3].second.m_TileSpriteIndex
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7672960771142859337, guid: 3c017b0d2dc5d284a8f489635754180d, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 2705ae5d115c37d4b96be23bc9e95626, type: 2}
     - target: {fileID: 7943933627649878661, guid: 3c017b0d2dc5d284a8f489635754180d, type: 3}
       propertyPath: m_ChunkCullingBounds.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8867960305673371653, guid: 3c017b0d2dc5d284a8f489635754180d, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 2705ae5d115c37d4b96be23bc9e95626, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -38,6 +38,10 @@ public class CharacterController : MonoBehaviour, IPausable
 
     [Space]
     [Header("Ground Check")]
+    [SerializeField] bool onSteepSlope = false;
+    [SerializeField] bool jumpConsumedThisFrame = false;
+    [SerializeField] float maxSlopeAngle = 45f;
+    [SerializeField] Vector2 groundNormal = Vector2.up;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float groundCheckDistance = 0.05f;
     [SerializeField] float groundHorizontalTolerance = 0.9f;
@@ -89,19 +93,26 @@ public class CharacterController : MonoBehaviour, IPausable
         UpdateJumpTimers();
         TryConsumeJump();
 
-        if (grounded == false)
-        {
-            inAir = true;
-            CharacterAnimator.ResetTrigger(JumpEndTrigger);
-        }
+        //if (grounded == false)
+        //{
+        //    inAir = true;
+        //    CharacterAnimator.ResetTrigger(JumpEndTrigger);
+        //}
     }
-
-    
 
     private void FixedUpdate()
     {
         if (paused) return;
+
+        if (grounded && !jumpConsumedThisFrame)
+            StickToGround();
+
+        if (onSteepSlope)
+            ApplySlopeSlide();
+
         MoveCharacter();
+
+        jumpConsumedThisFrame = false;
     }
 
     private void OnDrawGizmosSelected()
@@ -137,16 +148,19 @@ public class CharacterController : MonoBehaviour, IPausable
         if (animate)
             CharacterAnimator.SetBool(FlipBool, flip);
     }
-
     public void MoveCharacter()
     {
-        float targetSpeed = inputVector.x * maxSpeedX;
+        // sin control en rampas empinadas
+        if (onSteepSlope)
+            return;
 
+        float targetSpeed = inputVector.x * maxSpeedX;
         float speedDiff = targetSpeed - rigidBody2D.linearVelocity.x;
 
-        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? acceleration : deceleration;
+        float accelRate = (Mathf.Abs(targetSpeed) > 0.01f)
+            ? acceleration
+            : deceleration;
 
-        // freno extra al cambiar de dirección
         if (Mathf.Abs(targetSpeed) > 0.01f &&
             Mathf.Sign(targetSpeed) != Mathf.Sign(rigidBody2D.linearVelocity.x))
         {
@@ -156,15 +170,8 @@ public class CharacterController : MonoBehaviour, IPausable
         float movement = speedDiff * accelRate;
 
         rigidBody2D.AddForce(Vector2.right * movement);
-
-        if(Mathf.Abs(rigidBody2D.linearVelocityX) < 0.2f && grounded && targetSpeed == 0f)
-        {
-            rigidBody2D.Sleep();
-        }
-
-        print(rigidBody2D.angularVelocity);
-
     }
+
 
 
     private void CheckJumpInput()
@@ -200,18 +207,20 @@ public class CharacterController : MonoBehaviour, IPausable
 
     public void Jump()
     {
-        if(animate)
+        if (animate)
             CharacterAnimator.SetTrigger(JumpStartTrigger);
-        //
-        Vector2 v = rigidBody2D.linearVelocity;
 
-        if (v.y < 0f)
-            v.y = 0f;
+        jumpConsumedThisFrame = true;
+        grounded = false;
+        onSteepSlope = false;
 
-        rigidBody2D.linearVelocity = v;
+        // 🔒 limpiar TODA la velocidad previa
+        rigidBody2D.linearVelocity = Vector2.zero;
 
         rigidBody2D.AddForce(Vector2.up * JumpForce, ForceMode2D.Impulse);
     }
+
+
 
     private void CheckAttackInput()
     {
@@ -245,37 +254,98 @@ public class CharacterController : MonoBehaviour, IPausable
         }
     }
 
-
     private void CheckGrounded()
     {
         Bounds bounds = boxCollider2D.bounds;
-        print(bounds.size);
+
         RaycastHit2D hit = Physics2D.BoxCast(
             bounds.center,
-            (new Vector2(bounds.size.x * groundHorizontalTolerance, bounds.size.y)),
+            new Vector2(bounds.size.x * groundHorizontalTolerance, bounds.size.y),
             0f,
             Vector2.down,
             groundCheckDistance,
             groundLayer
         );
-        //print(rigidBody2D.linearVelocity);
-        grounded = hit.collider != null && Mathf.Abs(rigidBody2D.linearVelocity.y) < 2f;
-        if (animate) CharacterAnimator.SetBool(GroundedBool, grounded);
 
-        Vector2 v = rigidBody2D.linearVelocity;
+        bool wasGrounded = grounded;
 
-        if (v.y > 0 && grounded)
-            v.y = 0f;
+        grounded = false;
+        onSteepSlope = false;
+        groundNormal = Vector2.up;
 
-        rigidBody2D.linearVelocity = v;
-
-        if (inAir && grounded)
+        if (hit.collider != null)
         {
-            if (animate) CharacterAnimator.SetTrigger(JumpEndTrigger);
-            if (animate) CharacterAnimator.ResetTrigger(JumpStartTrigger);
+            float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+
+            if (slopeAngle <= maxSlopeAngle)
+            {
+                grounded = true;
+                groundNormal = hit.normal;
+            }
+            else
+            {
+                // ❌ rampa empinada
+                grounded = false;
+                onSteepSlope = true;
+                groundNormal = hit.normal;
+
+                // 🔒 CLAMP DE VELOCIDAD RESIDUAL
+                Vector2 v = rigidBody2D.linearVelocity;
+                v -= Vector2.Dot(v, groundNormal) * groundNormal;
+                rigidBody2D.linearVelocity = v;
+            }
+        }
+
+        if (animate)
+            CharacterAnimator.SetBool(GroundedBool, grounded);
+
+        if (!wasGrounded && grounded)
+        {
+            if (animate)
+            {
+                CharacterAnimator.SetTrigger(JumpEndTrigger);
+                CharacterAnimator.ResetTrigger(JumpStartTrigger);
+            }
             inAir = false;
         }
+
+        if (wasGrounded && !grounded)
+        {
+            if (animate)
+                CharacterAnimator.ResetTrigger(JumpEndTrigger);
+            inAir = true;
+        }
+            
     }
+
+
+    void StickToGround()
+    {
+        Vector2 v = rigidBody2D.linearVelocity;
+
+        float normalDot = Vector2.Dot(v, groundNormal);
+
+        // eliminar velocidad que se separa del suelo
+        if (normalDot > 0f)
+            v -= normalDot * groundNormal;
+
+        rigidBody2D.linearVelocity = v;
+    }
+
+
+    void ApplySlopeSlide()
+    {
+        // si casi no hay gravedad efectiva, no deslizar
+        float gravityDot = Vector2.Dot(Physics2D.gravity.normalized, groundNormal);
+        if (gravityDot > -0.1f)
+            return;
+
+        Vector2 slideDir = new Vector2(groundNormal.y, -groundNormal.x).normalized;
+        Vector2 slideForce = slideDir * Physics2D.gravity.magnitude;
+
+        rigidBody2D.AddForce(slideForce, ForceMode2D.Force);
+    }
+
 
     public void OnPause()
     {

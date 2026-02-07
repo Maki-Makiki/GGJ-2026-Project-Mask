@@ -6951,6 +6951,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DialogSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 7727626432404993330, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
       propertyPath: dialogueAnimator
       value: 

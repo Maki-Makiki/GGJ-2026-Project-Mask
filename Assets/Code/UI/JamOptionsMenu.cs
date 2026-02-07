@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.UI;
 
 public class JamOptionsMenu : MonoBehaviour
 {
@@ -11,17 +13,12 @@ public class JamOptionsMenu : MonoBehaviour
 
     [Header("Audio Mixer (exposed parameters)")]
     public AudioMixer audioMixer;
-
-    [Tooltip("Nombre del parámetro expuesto en el AudioMixer para efectos (en dB). Ej: SFXVolume")]
     public string sfxMixerParam = "SFXVolume";
-
-    [Tooltip("Nombre del parámetro expuesto en el AudioMixer para música (en dB). Ej: MusicVolume")]
     public string musicMixerParam = "MusicVolume";
 
     [Header("UI - Texts")]
     public TMP_Text sfxText;
     public TMP_Text musicText;
-
     public TMP_Text resolutionText;
     public TMP_Text fullscreenText;
     public TMP_Text vsyncText;
@@ -29,22 +26,24 @@ public class JamOptionsMenu : MonoBehaviour
     [Header("Audio Test")]
     public AudioSource testAudioSourceSFX;
     public AudioSource testAudioSourceMusic;
-
-    [Tooltip("Clip de prueba para efectos")]
     public AudioClip sfxTestClip;
-
-   [Tooltip("Clip de prueba para música (opcional)")]
     public AudioClip musicTestClip;
 
     [Header("Step Settings")]
     [Range(1, 100)] public int volumeStep = 10;
 
-    // Valores guardados / aplicados
+    // =========================
+    // AUDIO STATE
+    // =========================
+
     private int sfxVolume01_100 = 100;
     private int musicVolume01_100 = 100;
 
-    // Video: lo aplicado (real) y lo pendiente (preview)
-    private List<Resolution> availableResolutions = new List<Resolution>();
+    // =========================
+    // VIDEO STATE (PC)
+    // =========================
+
+    private List<Resolution> availableResolutions = new();
     private int appliedResolutionIndex = 0;
     private int pendingResolutionIndex = 0;
 
@@ -54,16 +53,49 @@ public class JamOptionsMenu : MonoBehaviour
     private bool appliedVsync = true;
     private bool pendingVsync = true;
 
-    // PlayerPrefs keys
+    // =========================
+    // VIDEO STATE (ANDROID)
+    // =========================
+
+    private readonly int[] androidResolutionPercents = { 40, 50, 60, 70, 80, 90, 100};
+    private int appliedAndroidResIndex = 0;
+    private int pendingAndroidResIndex = 0;
+
+    // =========================
+    // PREF KEYS
+    // =========================
+
     private const string KEY_SFX = "opt_sfx_0_100";
     private const string KEY_MUSIC = "opt_music_0_100";
     private const string KEY_RES_INDEX = "opt_res_index";
     private const string KEY_FULLSCREEN = "opt_fullscreen";
     private const string KEY_VSYNC = "opt_vsync";
 
+    private bool IsAndroid => Application.platform == RuntimePlatform.Android;
+
+
+    [Header("Platform")]
+    [Tooltip("Contenedor completo de la opción Pantalla Completa")]
+    public GameObject fullscreenContainer;
+
+    [Header("Navigation")]
+    [Tooltip("Botón de Sincronización Vertical")]
+    public Selectable vSyncSelectable;
+
+    [Tooltip("Botón de Pantalla Completa")]
+    public Selectable fullscreenSelectable;
+
+    [Tooltip("Botón Aplicar")]
+    public Selectable applySelectable;
+
+    // =========================
+    // UNITY
+    // =========================
+
     private void Awake()
     {
-        BuildResolutionList();
+        if (!IsAndroid)
+            BuildResolutionList();
     }
 
     private void Start()
@@ -72,15 +104,16 @@ public class JamOptionsMenu : MonoBehaviour
         {
             LoadAll();
             ApplyAudioToMixer();
-            ApplyVideoNow(); // aplica lo guardado
+            ApplyVideoNow();
         }
         else
         {
-            // Si no auto-carga, al menos reflejamos UI con defaults actuales del sistema
             ReadCurrentSystemVideoAsApplied();
             CopyAppliedToPending();
             RefreshAllUI();
         }
+
+        ApplyPlatformRules();
     }
 
     // =========================
@@ -92,11 +125,28 @@ public class JamOptionsMenu : MonoBehaviour
         sfxVolume01_100 = Mathf.Clamp(PlayerPrefs.GetInt(KEY_SFX, 100), 0, 100);
         musicVolume01_100 = Mathf.Clamp(PlayerPrefs.GetInt(KEY_MUSIC, 100), 0, 100);
 
-        appliedResolutionIndex = Mathf.Clamp(PlayerPrefs.GetInt(KEY_RES_INDEX, GetClosestResolutionIndexToCurrent()), 0, availableResolutions.Count - 1);
-        appliedFullscreen = PlayerPrefs.GetInt(KEY_FULLSCREEN, Screen.fullScreen ? 1 : 0) == 1;
-        appliedVsync = PlayerPrefs.GetInt(KEY_VSYNC, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
+        if (IsAndroid)
+        {
+            appliedAndroidResIndex = Mathf.Clamp(
+                PlayerPrefs.GetInt(KEY_RES_INDEX, 0),
+                0,
+                androidResolutionPercents.Length - 1
+            );
+            pendingAndroidResIndex = appliedAndroidResIndex;
+        }
+        else
+        {
+            appliedResolutionIndex = Mathf.Clamp(
+                PlayerPrefs.GetInt(KEY_RES_INDEX, GetClosestResolutionIndexToCurrent()),
+                0,
+                availableResolutions.Count - 1
+            );
 
-        CopyAppliedToPending();
+            appliedFullscreen = PlayerPrefs.GetInt(KEY_FULLSCREEN, Screen.fullScreen ? 1 : 0) == 1;
+            appliedVsync = PlayerPrefs.GetInt(KEY_VSYNC, QualitySettings.vSyncCount > 0 ? 1 : 0) == 1;
+            CopyAppliedToPending();
+        }
+
         RefreshAllUI();
     }
 
@@ -105,9 +155,14 @@ public class JamOptionsMenu : MonoBehaviour
         PlayerPrefs.SetInt(KEY_SFX, sfxVolume01_100);
         PlayerPrefs.SetInt(KEY_MUSIC, musicVolume01_100);
 
-        PlayerPrefs.SetInt(KEY_RES_INDEX, appliedResolutionIndex);
-        PlayerPrefs.SetInt(KEY_FULLSCREEN, appliedFullscreen ? 1 : 0);
-        PlayerPrefs.SetInt(KEY_VSYNC, appliedVsync ? 1 : 0);
+        if (IsAndroid)
+            PlayerPrefs.SetInt(KEY_RES_INDEX, appliedAndroidResIndex);
+        else
+        {
+            PlayerPrefs.SetInt(KEY_RES_INDEX, appliedResolutionIndex);
+            PlayerPrefs.SetInt(KEY_FULLSCREEN, appliedFullscreen ? 1 : 0);
+            PlayerPrefs.SetInt(KEY_VSYNC, appliedVsync ? 1 : 0);
+        }
 
         PlayerPrefs.Save();
     }
@@ -118,94 +173,80 @@ public class JamOptionsMenu : MonoBehaviour
 
     public void SfxMinus10() => SetSfxVolume(sfxVolume01_100 - volumeStep);
     public void SfxPlus10() => SetSfxVolume(sfxVolume01_100 + volumeStep);
-
     public void MusicMinus10() => SetMusicVolume(musicVolume01_100 - volumeStep);
     public void MusicPlus10() => SetMusicVolume(musicVolume01_100 + volumeStep);
 
-    public void PlaySfxTest()
+    private void SetSfxVolume(int v)
     {
-        if (testAudioSourceSFX == null || sfxTestClip == null) return;
-
-        testAudioSourceSFX.Stop();
-        testAudioSourceSFX.clip = sfxTestClip;
-        testAudioSourceSFX.Play();
-    }
-
-    public void PlayMusicTest()
-    {
-        if (testAudioSourceMusic == null || musicTestClip == null) return;
-
-        testAudioSourceMusic.Stop();
-        testAudioSourceMusic.clip = musicTestClip;
-        testAudioSourceMusic.Play();
-    }
-
-    private void SetSfxVolume(int value0_100)
-    {
-        sfxVolume01_100 = Mathf.Clamp(value0_100, 0, 100);
+        sfxVolume01_100 = Mathf.Clamp(v, 0, 100);
         ApplyAudioToMixer();
         RefreshAudioUI();
         PlayerPrefs.SetInt(KEY_SFX, sfxVolume01_100);
-        PlayerPrefs.Save();
     }
 
-    private void SetMusicVolume(int value0_100)
+    private void SetMusicVolume(int v)
     {
-        musicVolume01_100 = Mathf.Clamp(value0_100, 0, 100);
+        musicVolume01_100 = Mathf.Clamp(v, 0, 100);
         ApplyAudioToMixer();
         RefreshAudioUI();
         PlayerPrefs.SetInt(KEY_MUSIC, musicVolume01_100);
-        PlayerPrefs.Save();
     }
 
     private void ApplyAudioToMixer()
     {
-        if (audioMixer == null) return;
+        if (!audioMixer) return;
 
-        // Convertimos 0..100 a 0.0001..1 (evita log(0))
-        float sfxLinear = Mathf.Clamp01(sfxVolume01_100 / 100f);
-        float musicLinear = Mathf.Clamp01(musicVolume01_100 / 100f);
-
-        float sfxDb = LinearToDb(sfxLinear);
-        float musicDb = LinearToDb(musicLinear);
-
-        audioMixer.SetFloat(sfxMixerParam, sfxDb);
-        audioMixer.SetFloat(musicMixerParam, musicDb);
+        audioMixer.SetFloat(sfxMixerParam, LinearToDb(sfxVolume01_100 / 100f));
+        audioMixer.SetFloat(musicMixerParam, LinearToDb(musicVolume01_100 / 100f));
     }
 
-    private float LinearToDb(float linear)
+    private float LinearToDb(float v)
     {
-        // 0 => silencio real, lo forzamos a -80dB aprox
-        if (linear <= 0.0001f) return -80f;
-        return Mathf.Log10(linear) * 20f;
-    }
-
-    private void RefreshAudioUI()
-    {
-        if (sfxText != null) sfxText.text = $"Efectos: {sfxVolume01_100}";
-        if (musicText != null) musicText.text = $"Musica: {musicVolume01_100}";
+        if (v <= 0.0001f) return -80f;
+        return Mathf.Log10(v) * 20f;
     }
 
     // =========================
-    // VIDEO (preview)
+    // VIDEO NAVIGATION
     // =========================
 
     public void ResolutionLeft()
     {
-        if (availableResolutions.Count == 0) return;
-        pendingResolutionIndex = (pendingResolutionIndex - 1 + availableResolutions.Count) % availableResolutions.Count;
+        if (IsAndroid)
+        {
+            pendingAndroidResIndex =
+                (pendingAndroidResIndex - 1 + androidResolutionPercents.Length) %
+                androidResolutionPercents.Length;
+        }
+        else
+        {
+            pendingResolutionIndex =
+                (pendingResolutionIndex - 1 + availableResolutions.Count) %
+                availableResolutions.Count;
+        }
+
         RefreshVideoUI();
     }
 
     public void ResolutionRight()
     {
-        if (availableResolutions.Count == 0) return;
-        pendingResolutionIndex = (pendingResolutionIndex + 1) % availableResolutions.Count;
+        if (IsAndroid)
+        {
+            pendingAndroidResIndex =
+                (pendingAndroidResIndex + 1) % androidResolutionPercents.Length;
+        }
+        else
+        {
+            pendingResolutionIndex =
+                (pendingResolutionIndex + 1) % availableResolutions.Count;
+        }
+
         RefreshVideoUI();
     }
 
     public void ToggleFullscreen()
     {
+        if (IsAndroid) return;
         pendingFullscreen = !pendingFullscreen;
         RefreshVideoUI();
     }
@@ -218,74 +259,102 @@ public class JamOptionsMenu : MonoBehaviour
 
     public void ApplyVideo()
     {
-        // Guardamos pendientes como aplicados
-        appliedResolutionIndex = pendingResolutionIndex;
-        appliedFullscreen = pendingFullscreen;
-        appliedVsync = pendingVsync;
+        if (IsAndroid)
+        {
+            appliedAndroidResIndex = pendingAndroidResIndex;
+            ApplyAndroidResolutionScale();
+        }
+        else
+        {
+            appliedResolutionIndex = pendingResolutionIndex;
+            appliedFullscreen = pendingFullscreen;
+            appliedVsync = pendingVsync;
+            ApplyVideoNow();
+        }
 
-        ApplyVideoNow();
         SaveAll();
-        RefreshVideoUI();
-    }
-
-    public void DiscardVideoChanges()
-    {
-        // Revierte el preview a lo aplicado (ideal para "Volver")
-        CopyAppliedToPending();
         RefreshVideoUI();
     }
 
     private void ApplyVideoNow()
     {
-        if (availableResolutions.Count == 0)
-        {
-            ReadCurrentSystemVideoAsApplied();
-            CopyAppliedToPending();
-            RefreshVideoUI();
-            return;
-        }
+        if (IsAndroid) return;
 
-        Resolution r = availableResolutions[Mathf.Clamp(appliedResolutionIndex, 0, availableResolutions.Count - 1)];
+        Resolution r = availableResolutions[appliedResolutionIndex];
 
-        // Fullscreen mode simple para jam
         Screen.fullScreen = appliedFullscreen;
 
 #if !UNITY_WEBGL
-    // Aplicar resolución (NO en WebGL porque rompe el canvas / escala en itch)
-    Screen.SetResolution(
-        r.width,
-        r.height,
-        (appliedFullscreen) ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed,
-        r.refreshRateRatio
-    );
+        Screen.SetResolution(
+            r.width,
+            r.height,
+            appliedFullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed,
+            r.refreshRateRatio
+        );
 #endif
 
-        // VSync
         QualitySettings.vSyncCount = appliedVsync ? 1 : 0;
+    }
 
-        RefreshVideoUI();
+    // =========================
+    // ANDROID RESOLUTION
+    // =========================
+
+    private void ApplyAndroidResolutionScale()
+    {
+        var urp = UniversalRenderPipeline.asset;
+        if (!urp) return;
+
+        int percent = androidResolutionPercents[appliedAndroidResIndex];
+        urp.renderScale = percent / 100f;
+    }
+
+    private Vector2Int GetAndroidLandscapeResolution()
+    {
+        int w = Screen.width;
+        int h = Screen.height;
+        if (h > w) (w, h) = (h, w);
+        return new Vector2Int(w, h);
+    }
+
+    private string GetAndroidResolutionText(int percent)
+    {
+        Vector2Int baseRes = GetAndroidLandscapeResolution();
+        int w = Mathf.RoundToInt(baseRes.x * percent / 100f);
+        int h = Mathf.RoundToInt(baseRes.y * percent / 100f);
+        return $"{w} x {h} ({percent}%)";
+    }
+
+    // =========================
+    // UI
+    // =========================
+
+    private void RefreshAudioUI()
+    {
+        if (sfxText) sfxText.text = $"Efectos: {sfxVolume01_100}";
+        if (musicText) musicText.text = $"Musica: {musicVolume01_100}";
     }
 
     private void RefreshVideoUI()
     {
-        if (resolutionText != null)
+        if (resolutionText)
         {
-            if (availableResolutions.Count > 0)
+            if (IsAndroid)
+                resolutionText.text = GetAndroidResolutionText(
+                    androidResolutionPercents[pendingAndroidResIndex]);
+            else
             {
-                Resolution r = availableResolutions[Mathf.Clamp(pendingResolutionIndex, 0, availableResolutions.Count - 1)];
+                Resolution r = availableResolutions[pendingResolutionIndex];
                 int hz = Mathf.RoundToInt((float)r.refreshRateRatio.value);
                 resolutionText.text = $"{r.width} x {r.height} {hz}Hz";
             }
-            else
-            {
-                resolutionText.text = "Resolucion: N/A";
-            }
         }
 
-        if (fullscreenText != null)
-            fullscreenText.text = $"Pantalla Completa: {(pendingFullscreen ? "Si" : "No")}";
+        if (fullscreenText)
+            fullscreenText.text = IsAndroid ? "Pantalla Completa: Si" :
+                $"Pantalla Completa: {(pendingFullscreen ? "Si" : "No")}";
 
-        if (vsyncText != null)
+        if (vsyncText)
             vsyncText.text = $"VSync: {(pendingVsync ? "Si" : "No")}";
     }
 
@@ -296,61 +365,35 @@ public class JamOptionsMenu : MonoBehaviour
     }
 
     // =========================
-    // RESOLUTIONS
+    // PC RESOLUTION UTILS
     // =========================
 
     private void BuildResolutionList()
     {
         availableResolutions.Clear();
-
-        // Screen.resolutions suele venir con duplicados (mismos WxH con Hz distintos)
-        // Los guardamos tal cual, porque vos querés mostrar Hz también.
-        Resolution[] res = Screen.resolutions;
-
-        if (res != null && res.Length > 0)
-            availableResolutions.AddRange(res);
-
-        if (availableResolutions.Count == 0)
-        {
-            // fallback mínimo
-            Resolution fallback = new Resolution
-            {
-                width = Screen.currentResolution.width,
-                height = Screen.currentResolution.height,
-                refreshRateRatio = Screen.currentResolution.refreshRateRatio
-            };
-            availableResolutions.Add(fallback);
-        }
+        availableResolutions.AddRange(Screen.resolutions);
     }
 
     private int GetClosestResolutionIndexToCurrent()
     {
-        if (availableResolutions.Count == 0) return 0;
-
-        int bestIndex = 0;
-        int bestScore = int.MaxValue;
-
-        int curW = Screen.currentResolution.width;
-        int curH = Screen.currentResolution.height;
-        int curHz = Mathf.RoundToInt((float)Screen.currentResolution.refreshRateRatio.value);
+        int best = 0;
+        int score = int.MaxValue;
 
         for (int i = 0; i < availableResolutions.Count; i++)
         {
             Resolution r = availableResolutions[i];
-            int hz = Mathf.RoundToInt((float)r.refreshRateRatio.value);
+            int s =
+                Mathf.Abs(r.width - Screen.currentResolution.width) * 10 +
+                Mathf.Abs(r.height - Screen.currentResolution.height) * 10;
 
-            int score = Mathf.Abs(r.width - curW) * 10
-                      + Mathf.Abs(r.height - curH) * 10
-                      + Mathf.Abs(hz - curHz);
-
-            if (score < bestScore)
+            if (s < score)
             {
-                bestScore = score;
-                bestIndex = i;
+                score = s;
+                best = i;
             }
         }
 
-        return bestIndex;
+        return best;
     }
 
     private void ReadCurrentSystemVideoAsApplied()
@@ -367,16 +410,54 @@ public class JamOptionsMenu : MonoBehaviour
         pendingVsync = appliedVsync;
     }
 
-    // =========================
-    // EXTRA (para botón volver)
-    // =========================
-
-    /// <summary>
-    /// Llamalo desde el botón "Volver" ANTES de cambiar de escena/menu.
-    /// Revierte cambios de video que no se aplicaron.
-    /// </summary>
-    public void OnBackToMenuDiscardVideoIfPending()
+    void ApplyPlatformRules()
     {
-        DiscardVideoChanges();
+#if UNITY_ANDROID
+        ApplyAndroidLayout();
+#else
+        ApplyDesktopLayout();
+#endif
+    }
+
+    void ApplyAndroidLayout()
+    {
+        // Ocultar Pantalla Completa
+        if (fullscreenContainer != null)
+            fullscreenContainer.SetActive(false);
+
+        // Navigation: VSync ↓ -> Aplicar
+        if (vSyncSelectable != null && applySelectable != null)
+        {
+            var navVSync = vSyncSelectable.navigation;
+            navVSync.mode = Navigation.Mode.Explicit;
+            navVSync.selectOnDown = applySelectable;
+            vSyncSelectable.navigation = navVSync;
+
+            var navApply = applySelectable.navigation;
+            navApply.mode = Navigation.Mode.Explicit;
+            navApply.selectOnUp = vSyncSelectable;
+            applySelectable.navigation = navApply;
+        }
+    }
+
+    void ApplyDesktopLayout()
+    {
+        // Mostrar Pantalla Completa
+        if (fullscreenContainer != null)
+            fullscreenContainer.SetActive(true);
+
+        // Navigation: VSync ↓ -> Pantalla Completa
+        if (vSyncSelectable != null && fullscreenSelectable != null)
+        {
+            var nav = vSyncSelectable.navigation;
+            nav.mode = Navigation.Mode.Explicit;
+            nav.selectOnDown = fullscreenSelectable;
+            vSyncSelectable.navigation = nav;
+
+            var navApply = applySelectable.navigation;
+            navApply.mode = Navigation.Mode.Explicit;
+            navApply.selectOnUp = fullscreenSelectable;
+            applySelectable.navigation = navApply;
+        }
     }
 }

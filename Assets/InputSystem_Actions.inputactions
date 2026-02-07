@@ -205,8 +205,41 @@
                 },
                 {
                     "name": "",
+                    "id": "3d0a22bb-1d32-4c3c-b249-1a95288680a0",
+                    "path": "<DualShock4GamepadAndroid>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "c09e57d9-ace6-4d07-a00c-0d9c84d78ff9",
                     "path": "<XInputController>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14a19684-3081-49d0-9374-06f3695327f2",
+                    "path": "<XboxOneGamepadAndroid>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0881ffa3-0d3f-4d09-89ea-cd5175d97d07",
+                    "path": "<XboxOneGampadiOS>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Xbox",
@@ -273,6 +306,116 @@
                     "name": "right",
                     "id": "648afba6-eea9-4d08-ba2b-79147ef4faef",
                     "path": "<XInputController>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Dpad Xbox Android",
+                    "id": "21f19fee-4a96-4919-aee0-05052f955ad0",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "cfc66bcd-2045-42c6-8346-0ef37cc4d4fc",
+                    "path": "<XboxOneGamepadAndroid>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "dc4e0f8e-54cf-416c-bc42-2b2602bc10e7",
+                    "path": "<XboxOneGamepadAndroid>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "aa7f3e37-a688-413b-bda7-a548a2ea354b",
+                    "path": "<XboxOneGamepadAndroid>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "04015614-808d-44fd-aba7-a02fc65df6bf",
+                    "path": "<XboxOneGamepadAndroid>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Dpad Xbox IOS",
+                    "id": "da82e35e-b29d-43c5-8a0c-cad5df628934",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "d9bb79f1-39f2-4577-a510-5f24f181b8e3",
+                    "path": "<XboxOneGampadiOS>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "ed8544b3-d639-4b31-80b2-2210709ac269",
+                    "path": "<XboxOneGampadiOS>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "e15c3862-40d6-40bb-8d7d-8fc716bec11a",
+                    "path": "<XboxOneGampadiOS>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "0f79e7d4-fdd0-4fb0-953d-63be4373d5b5",
+                    "path": "<XboxOneGampadiOS>/dpad/right",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Xbox",
@@ -383,6 +526,61 @@
                     "name": "right",
                     "id": "031c10a3-5f6c-4f5c-91a0-41783557c401",
                     "path": "<DualShockGamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Dpad Playstation",
+                    "id": "9f0c4cb0-aaf6-46e3-82c6-7d9342ce0737",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "787b975b-8e60-4e97-9306-64b8b7438bc9",
+                    "path": "<DualShock4GamepadAndroid>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "4b7f223a-b6a9-4290-9912-57ab62b9e5f0",
+                    "path": "<DualShock4GamepadAndroid>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "799d30a1-df50-4701-91ad-61b0320e47c1",
+                    "path": "<DualShock4GamepadAndroid>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "b54bb56b-71db-486e-8bbb-a1f27e3fdad8",
+                    "path": "<DualShock4GamepadAndroid>/dpad/right",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Playstation",
@@ -513,6 +711,17 @@
                 },
                 {
                     "name": "",
+                    "id": "efbbe9b6-8c2a-4ec9-8fab-3da515916515",
+                    "path": "<DualShock4GamepadAndroid>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "99cbe0be-2a15-49eb-a424-c2fb82f27368",
                     "path": "<XInputController>/buttonWest",
                     "interactions": "",
@@ -535,8 +744,52 @@
                 },
                 {
                     "name": "",
+                    "id": "e6ef6f6f-9cc6-49c8-9599-fbc6489cae51",
+                    "path": "<XboxOneGamepadAndroid>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c6916e3f-b842-4899-9911-f5196b45bb05",
+                    "path": "<XboxOneGampadiOS>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "f03335a6-b079-4d8e-831e-5ac52a860406",
                     "path": "<XInputController>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Accept",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3e1c5a77-b71c-4dcf-8149-d512c03de367",
+                    "path": "<XboxOneGamepadAndroid>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Accept",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "284ed1ab-3e0c-477d-8149-881b8a67d841",
+                    "path": "<XboxOneGampadiOS>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Xbox",
@@ -601,6 +854,17 @@
                 },
                 {
                     "name": "",
+                    "id": "2d45b93d-b915-4d8b-ac9a-f92df1c35e92",
+                    "path": "<DualShock4GamepadAndroid>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Accept",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "99d3fdf0-78be-4f85-9624-8bbe335175d0",
                     "path": "<Keyboard>/enter",
                     "interactions": "",
@@ -656,8 +920,41 @@
                 },
                 {
                     "name": "",
+                    "id": "cd75114f-ca70-40f4-92c0-f1fef0129fe7",
+                    "path": "<DualShock4GamepadAndroid>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "86014060-674e-46d6-8af0-3d830e140f4a",
                     "path": "<XInputController>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "10bc68c0-d05f-43a1-b94f-a3d4ae2c48e9",
+                    "path": "<XboxOneGamepadAndroid>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bb405676-e174-4c5b-ab98-a94f967d8a15",
+                    "path": "<XboxOneGampadiOS>/buttonEast",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Xbox",
@@ -711,8 +1008,41 @@
                 },
                 {
                     "name": "",
+                    "id": "b2b60c1c-571c-4ac8-84af-f4458e0b5dd9",
+                    "path": "<DualShock4GamepadAndroid>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Pausa",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "935c938c-dfbd-4c3d-99f0-d7304346cfc5",
                     "path": "<XInputController>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Pausa",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aa88a7fd-add0-485e-84a8-950eda16116a",
+                    "path": "<XboxOneGamepadAndroid>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Pausa",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "38260463-816b-4fec-ab00-bdda07dc6c82",
+                    "path": "<XboxOneGampadiOS>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Xbox",
@@ -777,8 +1107,41 @@
                 },
                 {
                     "name": "",
+                    "id": "1e1657fe-99e8-4f11-b37d-c7c99e144748",
+                    "path": "<DualShock4GamepadAndroid>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "bb98af69-cc7e-4ae3-adbd-a5eccefaa999",
                     "path": "<XInputController>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92a4d3a8-889f-4fc4-ab55-f4416f02e87a",
+                    "path": "<XboxOneGamepadAndroid>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "448b7064-4701-45aa-8bee-ae615852416d",
+                    "path": "<XboxOneGampadiOS>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Xbox",
@@ -843,8 +1206,41 @@
                 },
                 {
                     "name": "",
+                    "id": "36019c8f-2fb6-4050-9b8e-a6a47d70c743",
+                    "path": "<DualShock4GamepadAndroid>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Playstation",
+                    "action": "Mask Toggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "2f06c9a7-9c00-4295-b3cd-a0c6e94e766c",
                     "path": "<XInputController>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Mask Toggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3c9fcec0-2533-4ed2-ab1c-cba80d617505",
+                    "path": "<XboxOneGamepadAndroid>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Xbox",
+                    "action": "Mask Toggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "465e798c-d6aa-4d8d-bcb8-f184111a4382",
+                    "path": "<XboxOneGampadiOS>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Xbox",
@@ -1442,6 +1838,17 @@
                     "action": "MousePosition",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4ebea332-f312-4a36-a405-ae913368ba92",
+                    "path": "*/{Point}",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
@@ -1458,7 +1865,7 @@
                 },
                 {
                     "devicePath": "<Mouse>",
-                    "isOptional": false,
+                    "isOptional": true,
                     "isOR": false
                 }
             ]
@@ -1469,12 +1876,12 @@
             "devices": [
                 {
                     "devicePath": "<Gamepad>",
-                    "isOptional": false,
+                    "isOptional": true,
                     "isOR": false
                 },
                 {
                     "devicePath": "<WebGLGamepad>",
-                    "isOptional": false,
+                    "isOptional": true,
                     "isOR": false
                 }
             ]
@@ -1485,7 +1892,12 @@
             "devices": [
                 {
                     "devicePath": "<DualShockGamepad>",
-                    "isOptional": false,
+                    "isOptional": true,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<DualShock4GamepadAndroid>",
+                    "isOptional": true,
                     "isOR": false
                 }
             ]
@@ -1496,17 +1908,17 @@
             "devices": [
                 {
                     "devicePath": "<XboxOneGamepadAndroid>",
-                    "isOptional": false,
+                    "isOptional": true,
                     "isOR": false
                 },
                 {
                     "devicePath": "<XboxOneGampadiOS>",
-                    "isOptional": false,
+                    "isOptional": true,
                     "isOR": false
                 },
                 {
                     "devicePath": "<XInputController>",
-                    "isOptional": false,
+                    "isOptional": true,
                     "isOR": false
                 }
             ]
@@ -1517,7 +1929,7 @@
             "devices": [
                 {
                     "devicePath": "<SwitchProControllerHID>",
-                    "isOptional": false,
+                    "isOptional": true,
                     "isOR": false
                 }
             ]
