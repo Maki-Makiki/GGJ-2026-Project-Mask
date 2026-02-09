@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: BuildData
   m_EditorClassIdentifier: Assembly-CSharp::BuildScriptableData
   GameVersionText: GGJAM 2026
-  GameVersion: 1.5.11
-  GameBuild: 33
-  GameExportDate: 7/2/2026
+  GameVersion: 1.7.29
+  GameBuild: 67
+  GameExportDate: 8/2/2026
   GameExportPlataform: Android
   UnityVersion: Unity 6000.3.5f2

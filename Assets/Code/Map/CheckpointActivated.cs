@@ -9,11 +9,9 @@ public class CheckpointActivated : MonoBehaviour
     public AudioSource audioSourceAmbient;  // El One Shot
     public AudioClip audioClip;  // El One Shot
 
-    private bool activado = false;
+    private bool activado;
     void ActivarCheckpoint()
     {
-        activado = true;
-
         // 1. Dejar de emitir nuevas partículas, pero permite que las que 
         // están en pantalla terminen su ciclo de vida (disipación).
         var emission = particulasFlotantes.emission;
@@ -31,7 +29,6 @@ public class CheckpointActivated : MonoBehaviour
 
     void ResetParticles()
     {
-        activado = true;
 
         // 1. Dejar de emitir nuevas partículas, pero permite que las que 
         // están en pantalla terminen su ciclo de vida (disipación).

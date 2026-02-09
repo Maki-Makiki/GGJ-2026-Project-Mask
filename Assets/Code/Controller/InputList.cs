@@ -12,6 +12,7 @@ public class InputList : ScriptableObject
 public class InputIconsSet
 {
     public string ImputName;
+    public bool useActionName = false; // true = path es el nombre de la acción, no del binding
     public List<ButtomItem> Buttons;
 }
 

@@ -10,33 +10,45 @@ namespace Code.Character
         public GameObject cabeza;
         public Rigidbody2D cabezaRB;
 
+        public float RandomTorque = -10f;
+        public float RandomTorqueMax = 10f;
+        public Vector2 RandomForce = new Vector2(2f,2f);
+        public Vector2 RandomForceMax = new Vector2(2f,2f);
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if ((playerDamage & (1 << other.gameObject.layer)) != 0)
             {
-                // 1. Guardar la posición y rotación actual en el mundo antes de soltarla
                 Vector3 posicionActual = cabeza.transform.position;
                 Quaternion rotacionActual = cabeza.transform.rotation;
 
-                // 2. Desvincular completamente
                 cabeza.transform.SetParent(null);
-
-                // 3. RE-POSICIONAR manualmente justo después de soltarla 
-                // (Esto evita el "salto" a coordenadas 0,0,0)
                 cabeza.transform.position = posicionActual;
                 cabeza.transform.rotation = rotacionActual;
 
-                // 4. Activar físicas
                 cabezaRB.bodyType = RigidbodyType2D.Dynamic;
                 cabezaRB.simulated = true;
 
-                // 5. IMPORTANTE: Ignora colisión con el cuerpo para evitar que salga volando por error
+                // Ignorar colisión con el cuerpo
                 Physics2D.IgnoreCollision(cabeza.GetComponent<Collider2D>(), GetComponent<Collider2D>());
 
-                cabezaRB.AddForce(new Vector2(Random.Range(-2f, 2f), 5f), ForceMode2D.Impulse);
+                // --- Fuerza aleatoria más natural ---
+                float fuerzaHorizontal = Random.Range(RandomForce.x, RandomForceMax.x); // más rango horizontal
+                float fuerzaVertical = Random.Range(RandomForce.y, RandomForceMax.y);    // fuerza vertical variable
+                Vector2 fuerza = new Vector2(fuerzaHorizontal, fuerzaVertical);
 
-                // 6. Animación de muerte (opcional)
+                cabezaRB.AddForce(fuerza, ForceMode2D.Impulse);
+
+                // --- Torque aleatorio para que gire ---
+                float torque = Random.Range(RandomTorque, RandomTorqueMax); // valores en N*m, ajustá según escala
+                cabezaRB.AddTorque(torque, ForceMode2D.Impulse);
+
+                // Ajustes de drag para rebote natural
+                cabezaRB.linearDamping = 0.5f;         // frena horizontal
+                cabezaRB.angularDamping = 1f;    // frena giro
+                cabezaRB.gravityScale = 1.3f;   // gravedad normal
+
+                // Animación de muerte
                 animator.SetTrigger("Dead");
             }
         }

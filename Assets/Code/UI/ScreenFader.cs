@@ -18,7 +18,7 @@ public class ScreenFader : MonoBehaviour
         FadeIn,     // 1 -> 0
         FadeOut,    // 0 -> 1
         FadeInOut,  // 1 -> 0 -> (hold) -> 1
-        FadeOutIn   // 0 -> 1 -> (hold) -> 0   <-- NUEVO
+        FadeOutIn   // 0 -> 1 -> (hold) -> 0
     }
 
     [Header("References")]
@@ -32,7 +32,7 @@ public class ScreenFader : MonoBehaviour
     [Header("Timing")]
     [SerializeField] private float fadeDuration = 1f;
 
-    [Tooltip("Si arranca opaco, espera este tiempo antes de permitir el primer FadeIn (si lo llamás al inicio).")]
+    [Tooltip("Si arranca opaco, espera este tiempo antes de permitir el primer FadeIn.")]
     [SerializeField] private float startHoldBlack = 0f;
 
     [Tooltip("Tiempo en negro entre los 2 tramos del FadeInOut.")]
@@ -44,6 +44,10 @@ public class ScreenFader : MonoBehaviour
     [Header("Startup")]
     [Tooltip("Si está activo, arranca opaco (alpha=1) instantáneo.")]
     [SerializeField] private bool startOpaque = true;
+
+    [Header("Time Control")]
+    [Tooltip("Si está activo, ignora Time.timeScale y usa tiempo real.")]
+    [SerializeField] private bool useUnscaledTime = false;
 
     [Header("Events")]
     public UnityEvent onFadeStart;
@@ -88,6 +92,7 @@ public class ScreenFader : MonoBehaviour
     public void FadeOut() => Fade(FadeType.FadeOut);
     public void FadeInOut() => Fade(FadeType.FadeInOut);
     public void FadeOutIn() => Fade(FadeType.FadeOutIn);
+
     private IEnumerator FadeRoutine(FadeType type)
     {
         if (canvasGroup == null)
@@ -97,10 +102,9 @@ public class ScreenFader : MonoBehaviour
 
         onFadeStart?.Invoke();
 
-        // Si estamos opacos al inicio y queremos una pausa antes del primer FadeIn
         if (type == FadeType.FadeIn && startOpaque && startHoldBlack > 0f && canvasGroup.alpha >= 0.999f)
         {
-            yield return new WaitForSeconds(startHoldBlack);
+            yield return WaitForSecondsCustom(startHoldBlack);
         }
 
         if (type == FadeType.FadeIn)
@@ -122,33 +126,25 @@ public class ScreenFader : MonoBehaviour
 
             yield return FadeAlpha(0f, 1f, d);
 
-            // tiempo en negro antes de completar (ideal para loads)
             if (endHoldBlack > 0f)
-                yield return new WaitForSeconds(endHoldBlack);
+                yield return WaitForSecondsCustom(endHoldBlack);
 
             onFadeComplete?.Invoke();
         }
         else if (type == FadeType.FadeOutIn)
         {
-            // Queremos: 0 -> 1 -> hold en negro -> 0
-
-            // Mientras hacemos el fade, bloqueamos input
             canvasGroup.blocksRaycasts = true;
             canvasGroup.interactable = true;
 
-            // 1) FadeOut: 0 -> 1 (a negro)
             yield return FadeAlpha(0f, 1f, d * 0.5f);
 
             onFadeMidpoint?.Invoke();
 
-            // 2) Hold en negro
             if (midHoldBlack > 0f)
-                yield return new WaitForSeconds(midHoldBlack);
+                yield return WaitForSecondsCustom(midHoldBlack);
 
-            // 3) FadeIn: 1 -> 0 (volver a ver)
             yield return FadeAlpha(1f, 0f, d * 0.5f);
 
-            // Al terminar, dejamos pasar input
             canvasGroup.blocksRaycasts = false;
             canvasGroup.interactable = false;
 
@@ -156,20 +152,16 @@ public class ScreenFader : MonoBehaviour
         }
         else // FadeInOut
         {
-            // Aseguramos que esté negro al inicio del ciclo
             canvasGroup.blocksRaycasts = true;
             canvasGroup.interactable = true;
 
-            // 1) FadeIn: 1 -> 0
             yield return FadeAlpha(1f, 0f, d * 0.5f);
 
             onFadeMidpoint?.Invoke();
 
-            // 2) Hold en transparente (si querés usarlo al revés, decime y lo ajusto)
             if (midHoldBlack > 0f)
-                yield return new WaitForSeconds(midHoldBlack);
+                yield return WaitForSecondsCustom(midHoldBlack);
 
-            // 3) FadeOut: 0 -> 1
             yield return FadeAlpha(0f, 1f, d * 0.5f);
 
             onFadeComplete?.Invoke();
@@ -185,7 +177,7 @@ public class ScreenFader : MonoBehaviour
 
         while (t < time)
         {
-            t += Time.deltaTime;
+            t += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
             float x = Mathf.Clamp01(t / time);
             float eased = Ease(x);
 
@@ -196,6 +188,16 @@ public class ScreenFader : MonoBehaviour
         canvasGroup.alpha = to;
     }
 
+    private IEnumerator WaitForSecondsCustom(float time)
+    {
+        float t = 0f;
+        while (t < time)
+        {
+            t += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            yield return null;
+        }
+    }
+
     private float Ease(float x)
     {
         switch (ease)
@@ -203,15 +205,23 @@ public class ScreenFader : MonoBehaviour
             default:
             case FadeEase.Linear:
                 return x;
-
             case FadeEase.EaseIn:
                 return x * x;
-
             case FadeEase.EaseOut:
                 return 1f - Mathf.Pow(1f - x, 2f);
-
             case FadeEase.EaseInOut:
-                return x * x * (3f - 2f * x); // Smoothstep
+                return x * x * (3f - 2f * x);
         }
+    }
+
+    public void ResetFade(bool opaque)
+    {
+        if (fadeCoroutine != null)
+            StopCoroutine(fadeCoroutine);
+
+        canvasGroup.alpha = opaque ? 1f : 0f;
+        canvasGroup.blocksRaycasts = opaque;
+        canvasGroup.interactable = opaque;
+        fadeCoroutine = null;
     }
 }

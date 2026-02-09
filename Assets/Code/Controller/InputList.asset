@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InputList
   inputIconsSet:
   - ImputName: Xbox
+    useActionName: 0
     Buttons:
     - path: start
       sprite: {fileID: 21300000, guid: 93b43a53056ff45458136b0e4f7d82e2, type: 3}
@@ -36,6 +37,7 @@ MonoBehaviour:
     - path: right
       sprite: {fileID: 21300000, guid: f5d4e6f277b554941b723d4235bfe873, type: 3}
   - ImputName: Playstation
+    useActionName: 0
     Buttons:
     - path: start
       sprite: {fileID: 21300000, guid: ab0852f0aa8188e4eb6be0e9d3c2ba40, type: 3}
@@ -58,6 +60,7 @@ MonoBehaviour:
     - path: right
       sprite: {fileID: 21300000, guid: 390322613e4cd51449ee65f61f3863c9, type: 3}
   - ImputName: Switch
+    useActionName: 0
     Buttons:
     - path: start
       sprite: {fileID: 21300000, guid: 7a094cb236923dc47b4cee6684b9ba2a, type: 3}
@@ -80,6 +83,7 @@ MonoBehaviour:
     - path: right
       sprite: {fileID: 21300000, guid: e708dee2d53700d45a270e701d2b5518, type: 3}
   - ImputName: Gempad
+    useActionName: 0
     Buttons:
     - path: start
       sprite: {fileID: 21300000, guid: 2367f6f63e81a604b81ed248ed59e13f, type: 3}
@@ -102,6 +106,7 @@ MonoBehaviour:
     - path: right
       sprite: {fileID: 21300000, guid: 70ca765976c30754b8ba7cec921952f6, type: 3}
   - ImputName: Keyboard
+    useActionName: 0
     Buttons:
     - path: escape
       sprite: {fileID: 21300000, guid: f7b8c5615b4da1745b9dacff19a941e8, type: 3}
@@ -133,5 +138,22 @@ MonoBehaviour:
       sprite: {fileID: 21300000, guid: 1745796df585b614ea9133bbcfaba723, type: 3}
     - path: rightArrow
       sprite: {fileID: 21300000, guid: 9a141392618b2924a8751eecedb00de7, type: 3}
-    - path: J
+    - path: j
       sprite: {fileID: 21300000, guid: 0420c01f59fdef24e88e82be654882db, type: 3}
+    - path: b
+      sprite: {fileID: 21300000, guid: b3dd0ffe070e5224991b0bf822255482, type: 3}
+  - ImputName: Touch
+    useActionName: 1
+    Buttons:
+    - path: Accept
+      sprite: {fileID: 21300000, guid: db06d5a83dbc92549afba9ad8845439b, type: 3}
+    - path: Cancel
+      sprite: {fileID: 21300000, guid: 9c7ee160eac78ee4c8c95053d0307409, type: 3}
+    - path: Pause
+      sprite: {fileID: 21300000, guid: 60885d0f2342c554a9eb3d058b917300, type: 3}
+    - path: Action
+      sprite: {fileID: 21300000, guid: 835a40fac8ac7db4e9244bdb62817bc5, type: 3}
+    - path: Mask Toggle
+      sprite: {fileID: 21300000, guid: 59fafd02119b7e347bc4a6aff68a15f4, type: 3}
+    - path: Move
+      sprite: {fileID: 21300000, guid: 153a6750c6e5ecf4da9d2d07d95e3d4c, type: 3}

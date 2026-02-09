@@ -1,5 +1,6 @@
 using Code.Character;
 using UnityEngine;
+using UnityEngine.Windows;
 
 public class CharacterController : MonoBehaviour, IPausable
 {
@@ -24,10 +25,16 @@ public class CharacterController : MonoBehaviour, IPausable
     [Space]
     [Header("Input")]
     [SerializeField] string MaskToggleAction = "Mask Toggle";
+    [SerializeField] string PausaAction = "Pausa";
     [SerializeField] string AttackAction = "Action";
     [SerializeField] string JumpAction = "Jump";
     [SerializeField] string MoveAction = "Move";
     [SerializeField] Vector2 inputVector = Vector2.zero;
+
+    [Space]
+    [Header("Atack Timers")]
+    [SerializeField] public float cooldownAttack = 0.15f; // Evita el ruido de metralleta
+    [SerializeField] private float timerAttack;
 
     [Space]
     [Header("Jump Assist")]
@@ -40,7 +47,6 @@ public class CharacterController : MonoBehaviour, IPausable
     [Header("Ground Check")]
     [SerializeField] bool onSteepSlope = false;
     [SerializeField] bool jumpConsumedThisFrame = false;
-    [SerializeField] float maxSlopeAngle = 45f;
     [SerializeField] Vector2 groundNormal = Vector2.up;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float groundCheckDistance = 0.05f;
@@ -48,7 +54,6 @@ public class CharacterController : MonoBehaviour, IPausable
 
     [Space]
     [Header("States")]
-    [SerializeField] bool inAir = false;
     [SerializeField] bool grounded = false;
     [SerializeField] bool paused = false;
     [SerializeField] bool AttackMaskEnable = false;
@@ -81,36 +86,33 @@ public class CharacterController : MonoBehaviour, IPausable
     // Update is called once per frame
     void Update()
     {
-        if (paused)
+        CheckPausaInput();
+
+        if (ControllerManager.state.isPaused)
             return;
 
-        CheckMonkeyInput();
+        CheckActionInput();
         CheckMaskToggleInput();
-        CheckAttackInput();
-        CheckGrounded();
-        CheckHorizontalInput();
         CheckJumpInput();
+
+        CheckHorizontalInput();
+
+        UpdateAttackTimers();
+
         UpdateJumpTimers();
         TryConsumeJump();
-
-        //if (grounded == false)
-        //{
-        //    inAir = true;
-        //    CharacterAnimator.ResetTrigger(JumpEndTrigger);
-        //}
     }
 
     private void FixedUpdate()
     {
         if (paused) return;
 
-        if (grounded && !jumpConsumedThisFrame)
-            StickToGround();
-
-        if (onSteepSlope)
-            ApplySlopeSlide();
+        CheckGrounded();
 
         MoveCharacter();
+
+        if (grounded && !jumpConsumedThisFrame)
+            StickToGround();
 
         jumpConsumedThisFrame = false;
     }
@@ -126,28 +128,59 @@ public class CharacterController : MonoBehaviour, IPausable
         Gizmos.DrawWireCube(center, bounds.size * groundHorizontalTolerance);
     }
 
+    void StickToGround()
+    {
+        Vector2 v = rigidBody2D.linearVelocity;
+        float normalDot = Vector2.Dot(v, groundNormal);
+
+        // Solo “pegar” al suelo si nos estamos yendo hacia abajo
+        if (normalDot > 0f && v.y <= 0f)
+            v -= normalDot * groundNormal;
+
+        rigidBody2D.linearVelocity = v;
+    }
+
+    public void CheckPausaInput() {
+        if (ControllerManager.GetActionWasPressed(PausaAction))
+        {
+            SetPausePressed("CheckPausaInput()");
+        }
+    }
+
+
     public void CheckHorizontalInput()
     {
-        inputVector = ControllerManager.GetActionVector2(MoveAction);
+        if(ControllerManager.state.ImputDivece == ControllerManager.m_ImputDivice.Touch){return;}
+        HorizontalVectorUpdate(ControllerManager.GetActionVector2(MoveAction).x, "CheckHorizontalInput()");
+    }
+
+    public void HorizontalVectorUpdate(float inputVectorX, string origin)
+    {
+        if (ControllerManager.GetBlockedControllers())
+            inputVectorX = 0;
+        //ControllerManager.ConsoleLog($"HorizontalVectorUpdate({origin}) - X = {inputVectorX}");
+
 
         // Deadzone (evita drift del stick)
-        if (Mathf.Abs(inputVector.x) < deadzone)
-            inputVector.x = 0f;
+        if (Mathf.Abs(inputVectorX) < deadzone)
+            inputVectorX = 0f;
 
         // Opcional: forzar digital (solo -1, 0, 1)
         if (forceDigital)
-            inputVector.x = inputVector.x == 0 ? 0 : Mathf.Sign(inputVector.x);
+            inputVectorX = inputVectorX == 0 ? 0 : Mathf.Sign(inputVectorX);
 
-        if(animate)
-            CharacterAnimator.SetBool(WalkBool, (inputVector.x != 0) );
+        inputVector.x = inputVectorX;
 
-        
-        if (inputVector.x != 0f)
-            flip = inputVector.x < 0;
+        if (animate)
+            CharacterAnimator.SetBool(WalkBool, (inputVectorX != 0) );
+
+        if (inputVectorX != 0f)
+            flip = inputVectorX < 0;
 
         if (animate)
             CharacterAnimator.SetBool(FlipBool, flip);
     }
+
     public void MoveCharacter()
     {
         // sin control en rampas empinadas
@@ -172,14 +205,11 @@ public class CharacterController : MonoBehaviour, IPausable
         rigidBody2D.AddForce(Vector2.right * movement);
     }
 
-
-
     private void CheckJumpInput()
     {
         if (ControllerManager.GetActionWasPressed(JumpAction))
         {
-            Debug.Log("SALTO");
-            jumpBufferTimer = jumpBufferTime;
+            SetJumpPressed("CharacterController");
         }
     }
 
@@ -193,6 +223,10 @@ public class CharacterController : MonoBehaviour, IPausable
 
         // Jump buffer: cuenta hacia abajo
         jumpBufferTimer -= Time.deltaTime;
+    }
+    private void UpdateAttackTimers()
+    {
+        if (timerAttack > 0) timerAttack -= Time.deltaTime;
     }
 
     private void TryConsumeJump()
@@ -222,42 +256,55 @@ public class CharacterController : MonoBehaviour, IPausable
 
 
 
-    private void CheckAttackInput()
+    private void CheckActionInput()
     {
-        if (ControllerManager.GetActionWasPressed(AttackAction) && AttackMaskEnable)
+        if (ControllerManager.GetActionWasPressed(AttackAction))
         {
-            Debug.Log("Ataque!");
-            CharacterAnimator.SetBool(WalkBool, false);
-            CharacterAnimator.SetTrigger(AttackTrigger);
+            SetActionPressed("CharacterController");
         }
     }
 
-    private void CheckMonkeyInput()
+    private void Attack(string origin)
     {
-        if (ControllerManager.GetActionWasPressed(AttackAction) && !AttackMaskEnable)
+        if (timerAttack <= 0)
         {
-            Debug.Log("Mono!");
-            CharacterAnimator.SetTrigger(BrilloTrigger);
-            PlataformChange.state.SetPlataformAState();
+            ControllerManager.ConsoleLog($"Attack({origin})");
+            CharacterAnimator.SetBool(WalkBool, false);
+            CharacterAnimator.SetTrigger(AttackTrigger);
+            timerAttack = cooldownAttack;
         }
     }
+
+    private void MonkeyPower(string origin)
+    {
+        ControllerManager.ConsoleLog($"MonkeyPower({origin})");
+        CharacterAnimator.SetTrigger(BrilloTrigger);
+        PlataformChange.state.SetPlataformAState();
+    }
+
 
     private void CheckMaskToggleInput()
     {
         if (ControllerManager.GetActionWasPressed(MaskToggleAction))
         {
-            Debug.Log("Mascara Cambio!");
-
-            AttackMaskEnable = !AttackMaskEnable;
-            CharacterAnimator.SetBool(MaskBool, AttackMaskEnable);
-            ///aqui
+            SetMaskPressed("CharacterController");
         }
+    }
+
+    private void ChangeMask(string origin)
+    {
+        Debug.Log($"ChangeMask({origin})");
+
+        AttackMaskEnable = !AttackMaskEnable;
+        CharacterAnimator.SetBool(MaskBool, AttackMaskEnable);
+        ///aqui
     }
 
     private void CheckGrounded()
     {
         Bounds bounds = boxCollider2D.bounds;
 
+        // Detecta piso simple por debajo
         RaycastHit2D hit = Physics2D.BoxCast(
             bounds.center,
             new Vector2(bounds.size.x * groundHorizontalTolerance, bounds.size.y),
@@ -268,34 +315,9 @@ public class CharacterController : MonoBehaviour, IPausable
         );
 
         bool wasGrounded = grounded;
+        grounded = hit.collider != null;
 
-        grounded = false;
-        onSteepSlope = false;
-        groundNormal = Vector2.up;
-
-        if (hit.collider != null)
-        {
-            float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-
-            if (slopeAngle <= maxSlopeAngle)
-            {
-                grounded = true;
-                groundNormal = hit.normal;
-            }
-            else
-            {
-                // ❌ rampa empinada
-                grounded = false;
-                onSteepSlope = true;
-                groundNormal = hit.normal;
-
-                // 🔒 CLAMP DE VELOCIDAD RESIDUAL
-                Vector2 v = rigidBody2D.linearVelocity;
-                v -= Vector2.Dot(v, groundNormal) * groundNormal;
-                rigidBody2D.linearVelocity = v;
-            }
-        }
-
+        // Animaciones
         if (animate)
             CharacterAnimator.SetBool(GroundedBool, grounded);
 
@@ -306,46 +328,51 @@ public class CharacterController : MonoBehaviour, IPausable
                 CharacterAnimator.SetTrigger(JumpEndTrigger);
                 CharacterAnimator.ResetTrigger(JumpStartTrigger);
             }
-            inAir = false;
         }
 
         if (wasGrounded && !grounded)
         {
             if (animate)
                 CharacterAnimator.ResetTrigger(JumpEndTrigger);
-            inAir = true;
         }
-            
     }
 
 
-    void StickToGround()
+    // ----------------------
+    // INPUT INTERMEDIARIO
+    // ----------------------
+    public void SetHorizontalInput(float x, string origin)
     {
-        Vector2 v = rigidBody2D.linearVelocity;
-
-        float normalDot = Vector2.Dot(v, groundNormal);
-
-        // eliminar velocidad que se separa del suelo
-        if (normalDot > 0f)
-            v -= normalDot * groundNormal;
-
-        rigidBody2D.linearVelocity = v;
+       
+        if (ControllerManager.state.ImputDivece == ControllerManager.m_ImputDivice.Touch)
+        {
+            //ControllerManager.ConsoleLog($"SetJumpPressed({origin}) - X = {x}");
+            HorizontalVectorUpdate(x, origin);
+        }
     }
 
-
-    void ApplySlopeSlide()
+    public void SetJumpPressed(string origin)
     {
-        // si casi no hay gravedad efectiva, no deslizar
-        float gravityDot = Vector2.Dot(Physics2D.gravity.normalized, groundNormal);
-        if (gravityDot > -0.1f)
-            return;
-
-        Vector2 slideDir = new Vector2(groundNormal.y, -groundNormal.x).normalized;
-        Vector2 slideForce = slideDir * Physics2D.gravity.magnitude;
-
-        rigidBody2D.AddForce(slideForce, ForceMode2D.Force);
+        ControllerManager.ConsoleLog($"SetJumpPressed({origin})");
+        jumpBufferTimer = jumpBufferTime;
     }
 
+    public void SetActionPressed(string origin)
+    {
+        if (ControllerManager.GetBlockedControllers()) return;
+        ControllerManager.ConsoleLog($"SetActionPressed({origin})");
+        if (AttackMaskEnable)
+            Attack(origin);
+        else
+            MonkeyPower(origin);
+    }
+
+    public void SetMaskPressed(string origin)
+    {
+        if (ControllerManager.GetBlockedControllers()) return;
+        ControllerManager.ConsoleLog($"SetMaskPressed({origin})");
+        ChangeMask(origin);
+    }
 
     public void OnPause()
     {
@@ -353,9 +380,25 @@ public class CharacterController : MonoBehaviour, IPausable
         //pausa
     }
 
+    public void SetPausePressed(string origin)
+    {
+        if (ControllerManager.GetBlockedControllers()) return;
+        ControllerManager.ConsoleLog($"SetPausePressed({origin})");
+        SendPause();
+    }
+
+    public void SendPause()
+    {
+        ControllerManager.state.PauseGame();
+    }
+
     public void Pause()
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
+
+
+    public void LockControls() => ControllerManager.LockControls();
+    public void UnlockControls() => ControllerManager.UnlockControls();
 
 }

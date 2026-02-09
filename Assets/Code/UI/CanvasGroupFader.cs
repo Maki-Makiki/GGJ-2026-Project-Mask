@@ -1,6 +1,6 @@
-using System.Collections;
-using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine;
+using System.Collections;
 
 [DisallowMultipleComponent]
 public class CanvasGroupFader : MonoBehaviour
@@ -14,6 +14,9 @@ public class CanvasGroupFader : MonoBehaviour
 
     [Tooltip("Ease In Out tipo CSS (suave al inicio y al final).")]
     [SerializeField] private bool useEaseInOut = true;
+
+    [Tooltip("Si está activo, ignora Time.timeScale y usa tiempo real.")]
+    [SerializeField] private bool useUnscaledTime = false;
 
     [Header("Interaction Control")]
     [Tooltip("Si está activo, desactiva interactable/blocksRaycasts al empezar FadeOut, y los activa al terminar FadeIn.")]
@@ -47,49 +50,35 @@ public class CanvasGroupFader : MonoBehaviour
 
     public void FadeIn()
     {
-        // IMPORTANTE: mientras está apareciendo, NO queremos que sea clickeable todavía
         if (controlInteraction && target != null)
         {
             target.interactable = false;
             target.blocksRaycasts = false;
         }
 
-        StartFadeTo(1f, isFadeIn: true);
+        StartFadeTo(1f, true);
     }
 
     public void FadeOut()
     {
-        // IMPORTANTE: apenas empieza a desaparecer, ya no debe recibir clicks
         if (controlInteraction && target != null)
         {
             target.interactable = false;
             target.blocksRaycasts = false;
         }
 
-        StartFadeTo(0f, isFadeIn: false);
+        StartFadeTo(0f, false);
     }
 
     public void FadeTo(float targetAlpha)
     {
         targetAlpha = Mathf.Clamp01(targetAlpha);
-
         bool isFadeIn = targetAlpha > GetCurrentAlpha();
 
-        // Si va a desaparecer o aparecer, manejamos interacción con la misma lógica:
         if (controlInteraction && target != null)
         {
-            if (!isFadeIn)
-            {
-                // va hacia 0 => cortar input YA
-                target.interactable = false;
-                target.blocksRaycasts = false;
-            }
-            else
-            {
-                // va hacia 1 => mantener cortado hasta que termine
-                target.interactable = false;
-                target.blocksRaycasts = false;
-            }
+            target.interactable = false;
+            target.blocksRaycasts = false;
         }
 
         StartFadeTo(targetAlpha, isFadeIn);
@@ -106,8 +95,7 @@ public class CanvasGroupFader : MonoBehaviour
 
     public float GetCurrentAlpha()
     {
-        if (target == null) return 0f;
-        return target.alpha;
+        return target != null ? target.alpha : 0f;
     }
 
     private void StartFadeTo(float targetAlpha, bool isFadeIn)
@@ -122,19 +110,10 @@ public class CanvasGroupFader : MonoBehaviour
         {
             target.alpha = targetAlpha;
 
-            // Si llegamos a 1 => recién ahí habilitamos interacción
             if (controlInteraction)
             {
-                if (Mathf.Approximately(targetAlpha, 1f))
-                {
-                    target.interactable = true;
-                    target.blocksRaycasts = true;
-                }
-                else
-                {
-                    target.interactable = false;
-                    target.blocksRaycasts = false;
-                }
+                target.interactable = Mathf.Approximately(targetAlpha, 1f);
+                target.blocksRaycasts = Mathf.Approximately(targetAlpha, 1f);
             }
 
             if (useEvents)
@@ -155,7 +134,7 @@ public class CanvasGroupFader : MonoBehaviour
 
         while (t < transitionTime)
         {
-            t += Time.deltaTime;
+            t += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
             float normalized = Mathf.Clamp01(t / transitionTime);
 
             if (useEaseInOut)
@@ -168,21 +147,10 @@ public class CanvasGroupFader : MonoBehaviour
         target.alpha = toAlpha;
         fadeRoutine = null;
 
-        // Reglas de interacción:
-        // - FadeOut termina => queda NO interactuable
-        // - FadeIn termina => recién ahí se vuelve interactuable
         if (controlInteraction)
         {
-            if (Mathf.Approximately(toAlpha, 1f))
-            {
-                target.interactable = true;
-                target.blocksRaycasts = true;
-            }
-            else
-            {
-                target.interactable = false;
-                target.blocksRaycasts = false;
-            }
+            target.interactable = Mathf.Approximately(toAlpha, 1f);
+            target.blocksRaycasts = Mathf.Approximately(toAlpha, 1f);
         }
 
         if (useEvents)

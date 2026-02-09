@@ -44,7 +44,8 @@ public class SimpleDialogueIntro : MonoBehaviour
 
     [Header("Input")]
     [Tooltip("Nombre de acción para saltar/avanzar diálogo (ControllerManager).")]
-    [SerializeField] private string skipActionName = "Submit";
+    [SerializeField] private string skipActionName = "Accept";
+    [SerializeField] private string skipAllActionName = "Pausa";
 
     [Header("Dialogue Line Animator (optional)")]
     [SerializeField] private Animator dialogueAnimator;
@@ -89,6 +90,7 @@ public class SimpleDialogueIntro : MonoBehaviour
     private bool isRunning = false;
 
     private float lastSfxTime = -999f;
+    private bool skipConsumedThisFrame = false;
 
     private void Awake()
     {
@@ -102,14 +104,24 @@ public class SimpleDialogueIntro : MonoBehaviour
 
     private void Update()
     {
-        if (!isRunning)
-            return;
+        if (!isRunning) return;
 
-        // Usamos tu ControllerManager centralizado
-        if (!string.IsNullOrEmpty(skipActionName) && ControllerManager.GetActionWasPressed(skipActionName))
+        if (!skipConsumedThisFrame && !string.IsNullOrEmpty(skipActionName) && ControllerManager.GetActionWasPressed(skipActionName))
         {
             SkipOrNext();
+            skipConsumedThisFrame = true; // marca que consumiste este frame
         }
+
+        if (!string.IsNullOrEmpty(skipAllActionName) && ControllerManager.GetActionWasPressed(skipAllActionName))
+        {
+            SkipAllDialogue();
+            skipConsumedThisFrame = true;
+        }
+    }
+    private void LateUpdate()
+    {
+        // Resetea el flag al final del frame para que el input pueda registrarse el siguiente
+        skipConsumedThisFrame = false;
     }
 
     // -------------------------
@@ -157,6 +169,55 @@ public class SimpleDialogueIntro : MonoBehaviour
             NextLine();
         }
     }
+
+
+    // -----------------------------------
+    /// <summary>
+    /// Salta inmediatamente al final de todos los diálogos, disparando animaciones y eventos finales
+    /// </summary>
+    public void SkipAllDialogue()
+    {
+        if (!isRunning)
+            return;
+
+        if (lines == null || lines.Count == 0)
+        {
+            FinishDialogue();
+            return;
+        }
+
+        // Detener typing si está en progreso
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        // Avanzar al último diálogo
+        var lastLine = lines[lines.Count - 1];
+
+        // Setear speaker
+        string speaker = (lastLine.speakerName ?? "").Trim();
+        if (string.IsNullOrEmpty(speaker))
+            SetSpeakerVisible(false);
+        else
+        {
+            SetSpeakerVisible(true);
+            if (speakerText != null)
+                speakerText.text = speaker;
+        }
+
+        // Animación del diálogo final
+        if (dialogueAnimator != null && lastLine.animationClip != null)
+            dialogueAnimator.Play(lastLine.animationClip.name, 0, 1f); // 1f = tiempo al final
+
+        // Texto completo del último diálogo
+        if (dialogueText != null)
+            dialogueText.text = RemovePauseChars(lastLine.text);
+
+        SetContinuePrompt(false);
+
+        // Finalizar todo el diálogo
+        FinishDialogue();
+    }
+
 
     // -------------------------
     // INTERNAL
@@ -376,7 +437,7 @@ public class SimpleDialogueIntro : MonoBehaviour
                 if (!string.IsNullOrEmpty(result))
                     result += "\n";
 
-                // Si currentLine está vacío (palabra muy larga), la ponemos igual
+                // Si ,currentLine está vacío (palabra muy larga), la ponemos igual
                 if (string.IsNullOrEmpty(currentLine))
                 {
                     result += w;
@@ -443,7 +504,6 @@ public class SimpleDialogueIntro : MonoBehaviour
 
         // Split por palabras pero manteniendo posiciones
         // Vamos a recorrer clean y decidir dónde van los \n.
-        int start = 0;
         string resultRaw = "";
         string currentLineClean = "";
 
@@ -454,9 +514,6 @@ public class SimpleDialogueIntro : MonoBehaviour
             resultRaw += rawWithPauses.Substring(rawStart, rawEndInclusive - rawStart + 1);
         }
 
-        // Recorremos clean char por char, detectando palabras
-        // y armando líneas por palabras completas.
-        int rawSegmentStart = 0;
 
         // Extraemos palabras del clean con sus rangos [a..b]
         List<(int a, int b)> wordRanges = new List<(int a, int b)>();
