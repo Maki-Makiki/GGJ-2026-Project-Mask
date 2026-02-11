@@ -1,0 +1,52 @@
+----------------------------------------------------------------
+Simple Dialog System
+
+ARREGLADO - El cuadro de dialogo hace una animación de entrar en bucle si 
+se hace skipp all dialogs justo mientras entra espameando el 
+botón de sealtear escena.
+
+----------------------------------------------------------------
+Sonido y musica
+
+ARREGLADO - Algunas canciones no están puestas en loop, arreglar en la
+siguiente version
+
+----------------------------------------------------------------
+Efecto paralaje menus
+
+-se mueve con el mouse si no se detecta móviles y usa el
+acelerómetro cuando se haga un touch del dedo en la pantalla
+pero al parecer no todos los teléfonos tienen acelerómetro.
+evaluer la posibilidad de agregar condiciones para usar los 
+demás hardwares similares como el Gyroscope y el AngleVelocity
+para otros dispositivos sin acelerómetro, y quizás una condición
+para que se use el puntero del touch si todo falla.
+
+-Algunos sonidos aun están ligeramente desbalanceados en volumen
+revisar en especial el sonido ambiental del portal y chekpoint
+
+----------------------------------------------------------------
+Simple Dialog System
+
+-El cuadro de dialogo hace una animación de entrar en bucle si 
+se hace skipp all dialogs justo mientras entra espameando el 
+botón de sealtear escena.
+
+----------------------------------------------------------------
+Controles Tactiles
+
+-ajustar mas el recorrido del análogo, se vuelve molesto y 
+difícil hacer saltos largos porque hay que arrastrar al máximo 
+el análogo
+
+-Ajustar que tarde menos en dejarte usar el análogo cuando 
+comienza el nivel
+
+-Agregar opciones para ajustar sensibilidad del análogo o 
+volverlo digital para mejorar el feel de movimiento
+
+-Evaluar la posibilidad de poner unos controles tipo botones 
+también para hacer mas directo el movimiento y con posibilidad
+de salto incluido
+
+----------------------------------------------------------------

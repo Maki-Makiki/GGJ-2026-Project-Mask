@@ -6381,7 +6381,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.5
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -8334,15 +8334,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6834303098345495803, guid: 3218139964fd94d489a4452e45af588c, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6834303098345495803, guid: 3218139964fd94d489a4452e45af588c, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6834303098345495803, guid: 3218139964fd94d489a4452e45af588c, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 84.1176
       objectReference: {fileID: 0}
     - target: {fileID: 6834303098345495803, guid: 3218139964fd94d489a4452e45af588c, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -8350,7 +8350,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6834303098345495803, guid: 3218139964fd94d489a4452e45af588c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -38.380005
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9980,13 +9980,13 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 549918728}
-  - {fileID: 813312593}
   - {fileID: 986591633}
+  - {fileID: 549918728}
+  - {fileID: 1993783756}
+  - {fileID: 813312593}
   - {fileID: 987499989}
   - {fileID: 250714204}
   - {fileID: 371026024}
   - {fileID: 445259182}
   - {fileID: 2406780985270091722}
   - {fileID: 6385117642171703709}
-  - {fileID: 1993783756}

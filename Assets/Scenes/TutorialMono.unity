@@ -2126,6 +2126,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &314651498
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 314651500}
+  - component: {fileID: 314651499}
+  m_Layer: 0
+  m_Name: ControllerManagerBootstrapper
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &314651499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314651498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84adbe042d685f74caf4dc0ed8322f29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ControllerManagerBootstrapper
+  controllerManagerPrefab: {fileID: 9066585784498138668, guid: 6cbabb05adce54d42b4b7c03d9c33c57, type: 3}
+--- !u!4 &314651500
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 314651498}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 539.995, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &341113789
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2877,6 +2922,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea3301424be515147abc16966f0d7751, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelChanger
+  onSceneLoaded:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &538795398
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33058,7 +33106,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.5
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -35555,6 +35603,9 @@ CanvasRenderer:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 635278061}
+  - {fileID: 314651500}
+  - {fileID: 1772271058}
   - {fileID: 1911331762}
   - {fileID: 1526154827}
   - {fileID: 67801537}
@@ -35592,7 +35643,5 @@ SceneRoots:
   - {fileID: 538795402}
   - {fileID: 185995251}
   - {fileID: 341113789}
-  - {fileID: 635278061}
   - {fileID: 2578172310458198392}
   - {fileID: 8759637686473471139}
-  - {fileID: 1772271058}
