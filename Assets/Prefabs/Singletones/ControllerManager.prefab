@@ -9868,7 +9868,6 @@ MonoBehaviour:
         m_CallState: 2
   isPaused: 0
   BlockedControllers: 1
-  TouchAction: Touch
   enableDebug: 0
   consoleText: {fileID: 8156837172642832801}
   consoleLines: []
