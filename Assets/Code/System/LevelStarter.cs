@@ -1,7 +1,11 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
 
+/// <summary>
+/// LevelStarter ahora escucha eventos de LevelLoader y FullScreenFade
+/// para ejecutar acciones al inicio de la escena y al completar el fade.
+/// </summary>
 public class LevelStarter : MonoBehaviour
 {
     [Header("On Level Start")]
@@ -16,14 +20,6 @@ public class LevelStarter : MonoBehaviour
     public bool updateControllerDiviceDetection = true;
     public bool unlockControlsOnFadeEnd = true;
 
-    /// <summary>
-    /// Se ejecuta automáticamente al iniciar el nivel.
-    /// Orquesta el flujo inicial:
-    /// - Actualiza detección de dispositivo
-    /// - Dispara evento de inicio
-    /// - Ejecuta FadeIn
-    /// - Desbloquea controles y dispara evento post-fade
-    /// </summary>
     private IEnumerator Start()
     {
         Debug.Log("LevelStarter.Start() = START");
@@ -34,9 +30,12 @@ public class LevelStarter : MonoBehaviour
         if (onLevelStartEventEnabled)
             OnStartLevel();
 
-        FullScreenFade.State.SetOpaceImmediate();
-        yield return null;
-        yield return FullScreenFade.State.FadeIn(this);
+        if (FullScreenFade.State != null)
+        {
+            FullScreenFade.State.SetOpaceImmediate();
+            yield return null;
+            yield return FullScreenFade.State.FadeIn(this);
+        }
 
         if (unlockControlsOnFadeEnd)
             UnlockControls();
@@ -45,6 +44,18 @@ public class LevelStarter : MonoBehaviour
             OnFadeEnd();
 
         Debug.Log("LevelStarter.Start() = END");
+    }
+
+    /// <summary>
+    /// Evento disparado cuando LevelLoader indica que la escena terminó de cargar y el fade de loading terminó.
+    /// </summary>
+    private void HandleSceneLoadedAndFadeEnd()
+    {
+        if (unlockControlsOnFadeEnd)
+            UnlockControls();
+
+        if (onFadeEndEventEnabled)
+            OnFadeEnd();
     }
 
     /// <summary>
@@ -68,7 +79,10 @@ public class LevelStarter : MonoBehaviour
     /// </summary>
     public void UpdateControllerDiviceDetection()
     {
-        ControllerManager.state.DiviceChangedFunction();
+        if (ControllerManager.state != null)
+            ControllerManager.state.DiviceChangedFunction();
+        else
+            Debug.LogWarning("ControllerManager no existe. No se puede actualizar detección de dispositivos.");
     }
 
     /// <summary>
@@ -76,6 +90,9 @@ public class LevelStarter : MonoBehaviour
     /// </summary>
     public void UnlockControls()
     {
-        ControllerManager.state.LockControls(false);
+        if (ControllerManager.state != null)
+            ControllerManager.state.LockControls(false);
+        else
+            Debug.LogWarning("ControllerManager no existe. No se pueden desbloquear controles.");
     }
 }

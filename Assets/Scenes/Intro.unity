@@ -377,7 +377,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
   m_PrefabInstance: {fileID: 6038128974628815044}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1729719972}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c4d61d814c19a34c85c8827e6abafb8, type: 3}
@@ -690,6 +690,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1729719972 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7727626432404993330, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+  m_PrefabInstance: {fileID: 6038128974628815044}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1747952193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,6 +1115,18 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6592653874111676184, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
   m_PrefabInstance: {fileID: 6038128974628815044}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2008872528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729719972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2489e91663925e4ab2abaa035833df5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelLoaderHandler
 --- !u!1 &2036137377
 GameObject:
   m_ObjectHideFlags: 0
@@ -7150,17 +7167,44 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4343356834924176864}
     - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: onDialogueFinished.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: onDialogueFinished.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
       propertyPath: onDialogueFinished.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1593751681}
+      objectReference: {fileID: 2008872528}
+    - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: onDialogueFinished.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
       propertyPath: onDialogueFinished.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: FadeOut
+      value: ChangeLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: onDialogueFinished.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LevelLoaderHandler, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: onDialogueFinished.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: TutorialMono
+      objectReference: {fileID: 0}
+    - target: {fileID: 9113153207618438359, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      propertyPath: onDialogueFinished.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7727626432404993330, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2008872528}
   m_SourcePrefab: {fileID: 100100000, guid: 4e73d504c4de8434293152ded68b8bf7, type: 3}
 --- !u!212 &6492136422529817762
 SpriteRenderer:
@@ -7475,10 +7519,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6697973736330051003, guid: 8aa95ee2bd7d22144b0db50635465c56, type: 3}
-      propertyPath: fadePrefab
-      value: 
-      objectReference: {fileID: 4719929788915460208, guid: 5aba72c56230bf440b2b434d57a55ca8, type: 3}
     - target: {fileID: 7630568641096656720, guid: 8aa95ee2bd7d22144b0db50635465c56, type: 3}
       propertyPath: m_Name
       value: Bootstrappers

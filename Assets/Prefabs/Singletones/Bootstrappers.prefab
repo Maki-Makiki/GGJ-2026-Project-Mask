@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6059457399984472412}
   - component: {fileID: 7008946342172859215}
   - component: {fileID: 6697973736330051003}
+  - component: {fileID: 3767793196984221638}
   m_Layer: 0
   m_Name: Bootstrappers
   m_TagString: Untagged
@@ -58,5 +59,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5859175f0333e44584a558b01808258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FullScreenFadeBootstrap
-  fadePrefab: {fileID: 0}
+  fadePrefab: {fileID: 4719929788915460208, guid: 5aba72c56230bf440b2b434d57a55ca8, type: 3}
+  enableDebug: 1
+--- !u!114 &3767793196984221638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7630568641096656720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80fab4ae85bc5d545ac1e051e142222b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelLoaderBootstrap
+  loaderPrefab: {fileID: 5895836577311481099, guid: 370fb15a40faaf744b6cb06cf576bae0, type: 3}
   enableDebug: 1

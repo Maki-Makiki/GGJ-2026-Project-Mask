@@ -1232,7 +1232,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &250714202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2006,7 +2006,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &371026022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2168,7 +2168,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &445259181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4227,7 +4227,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &987499984
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5274,6 +5274,108 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1341181251}
   m_CullTransparentMesh: 1
+--- !u!1 &1379394600
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1379394602}
+  - component: {fileID: 1379394601}
+  m_Layer: 0
+  m_Name: LevelStarter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1379394601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379394600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36975589f192ad046a75211e3bfd6faa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelStarter
+  onLevelStartEventEnabled: 1
+  onLevelStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 395514241086529585}
+        m_TargetAssemblyTypeName: Code.UI.UIControlPrompt, Assembly-CSharp
+        m_MethodName: ShowActionPrompt
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Accept
+          m_BoolArgument: 0
+        m_CallState: 2
+  onFadeEndEventEnabled: 1
+  onFadeEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2769880115353156941}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
+        m_MethodName: Select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2070849613}
+        m_TargetAssemblyTypeName: SpriteFader, Assembly-CSharp
+        m_MethodName: FadeIn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2914216662026987227}
+        m_TargetAssemblyTypeName: CanvasGroupFader, Assembly-CSharp
+        m_MethodName: FadeIn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  updateControllerDiviceDetection: 1
+  unlockControlsOnFadeEnd: 1
+--- !u!4 &1379394602
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1379394600}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 852.0981, y: 216.92285, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1586180880
 GameObject:
   m_ObjectHideFlags: 0
@@ -6604,7 +6706,7 @@ MonoBehaviour:
   onFadeOutComplete:
     m_PersistentCalls:
       m_Calls: []
-  startInvisible: 0
+  startInvisible: 1
 --- !u!1 &2085964719
 GameObject:
   m_ObjectHideFlags: 0
@@ -7674,16 +7776,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 250714202}
-        m_TargetAssemblyTypeName: ScreenFader, Assembly-CSharp
-        m_MethodName: FadeOut
-        m_Mode: 1
+      - m_Target: {fileID: 5416494561719869197}
+        m_TargetAssemblyTypeName: LevelLoaderHandler, Assembly-CSharp
+        m_MethodName: ChangeLevel
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Intro
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2817352615912898014
@@ -8564,6 +8666,7 @@ GameObject:
   - component: {fileID: 5091508103553864050}
   - component: {fileID: 5416494561719869196}
   - component: {fileID: 2769880115353156941}
+  - component: {fileID: 5416494561719869197}
   m_Layer: 5
   m_Name: StartGame
   m_TagString: Untagged
@@ -8726,6 +8829,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.34
+--- !u!114 &5416494561719869197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5187294301754079166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2489e91663925e4ab2abaa035833df5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelLoaderHandler
 --- !u!114 &5450849343257832165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9994,6 +10109,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 986591633}
   - {fileID: 366829986}
+  - {fileID: 1379394602}
   - {fileID: 1993783756}
   - {fileID: 813312593}
   - {fileID: 987499989}
