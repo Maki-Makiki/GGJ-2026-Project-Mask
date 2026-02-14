@@ -65,6 +65,8 @@ public class SimpleDialogueIntro : MonoBehaviour
 
     [Header("Typewriter SFX")]
     [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioSource nextButtonSource;
+    [SerializeField] private AudioSource skipButtonSource;
     [SerializeField] private List<AudioClip> typeClips = new List<AudioClip>();
 
     [Tooltip("Tiempo mínimo entre sonidos, para evitar spam.")]
@@ -85,9 +87,9 @@ public class SimpleDialogueIntro : MonoBehaviour
     private int currentLineIndex = -1;
     private Coroutine typingCoroutine;
 
-    private bool isTyping = false;
-    private bool skipTypingRequested = false;
-    private bool isRunning = false;
+    [SerializeField] private bool isTyping = false;
+    [SerializeField] private bool skipTypingRequested = false;
+    [SerializeField] private bool isRunning = false;
 
     private float lastSfxTime = -999f;
     private bool skipConsumedThisFrame = false;
@@ -162,11 +164,13 @@ public class SimpleDialogueIntro : MonoBehaviour
         {
             // Completa instantáneo
             skipTypingRequested = true;
+            PlaySkipSound();
         }
         else
         {
             // Avanza
             NextLine();
+            PlayNextSound();
         }
     }
 
@@ -587,5 +591,30 @@ public class SimpleDialogueIntro : MonoBehaviour
         resultRaw = resultRaw.Replace("\n ", "\n");
 
         return resultRaw;
+    }
+
+    internal void PlayNextOrSkipSound()
+    {
+        Debug.Log("Simple Dialog isTyping " + isTyping);
+        if (isTyping) 
+        {
+            Debug.Log("Play Skip");
+            PlaySkipSound();
+        } 
+        else 
+        {
+            Debug.Log("Play Next");
+            PlayNextSound();
+        }
+    }
+
+    internal void PlayNextSound()
+    {
+        nextButtonSource.Play();
+    }
+
+    internal void PlaySkipSound()
+    {
+        skipButtonSource.Play();
     }
 }

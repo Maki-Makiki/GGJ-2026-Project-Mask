@@ -24,7 +24,7 @@ public class PlayerColliderAction : MonoBehaviour
                 Trigger.gameObject.GetComponent<EventCaller>().CallEvent();
 
             if (Trigger.gameObject.tag == "Dead")
-                playerTeleport.RespawnPlayer();
+                playerTeleport.RespawnPlayerNow();
 
         }
        

@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
 
@@ -17,12 +18,15 @@ public class ControllerManager : MonoBehaviour
     public PlayerInput playerImput;
     public InputList inputList;
 
+    public event System.Action OnUICancel;
     public event Action OnDeviceChanged;
     public event Action OnPause;
     public UnityEvent OnPauseStart;
     public UnityEvent OnPauseEnd;
     public bool isPaused = false;
     public bool BlockedControllers = false;
+
+    public UISoundManager uISoundManager;
 
 #if UNITY_ANDROID
     [SerializeField] string TouchAction = "Touch";
@@ -71,7 +75,17 @@ public class ControllerManager : MonoBehaviour
         IsReady = false;
         ControllerManager.state = null;
     }
-    
+
+    public void HandleUICancel()
+    {
+        OnUICancel?.Invoke();
+    }
+
+    public void ResetUISoundManager()
+    {
+        uISoundManager.SetUISoundManager();
+    }
+
     public void PauseGame()
     {
         PauseGame(!isPaused);

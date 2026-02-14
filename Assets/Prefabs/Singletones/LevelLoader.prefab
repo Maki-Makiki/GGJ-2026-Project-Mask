@@ -2080,6 +2080,7 @@ MonoBehaviour:
   visualTimer: 0
   fadeLoadingDuration: 0.1
   LoadingExtraDuration: 0.4
+  isLoading: 0
   useUnscaledTime: 1
 --- !u!1 &4991110846086554451
 GameObject:
@@ -2471,7 +2472,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 8fac6c9b9e2eca84185bcf3b9295122f, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0

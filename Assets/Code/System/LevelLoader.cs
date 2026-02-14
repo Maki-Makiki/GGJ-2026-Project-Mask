@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -27,6 +28,9 @@ public class LevelLoader : MonoBehaviour
     [Header("Timers")]
     [SerializeField] private float fadeLoadingDuration = 0.2f; // fade del canvas loading
     [SerializeField] private float LoadingExtraDuration = 0.2f; // fade del canvas loading
+
+    [Header("State")]
+    [SerializeField] private bool isLoading = false;
 
 
     [Header("Options")]
@@ -62,11 +66,25 @@ public class LevelLoader : MonoBehaviour
 
     public void ChangeLevelByName(string sceneName)
     {
+        if (isLoading) return;
+        Debug.Log("LOAD LEVEL => " + sceneName);
+        //if (ControllerManager.state.isPaused)
+        //    ControllerManager.state.PauseGame(false);
         StartCoroutine(LoadSceneRoutine(sceneName));
     }
 
     public void QuitGame()
     {
+        StartCoroutine(QuitGameRoutine());
+
+    }
+
+    private IEnumerator QuitGameRoutine()
+    {
+        //Fundido a negro global
+        if (FullScreenFade.State != null)
+            yield return StartCoroutine(FullScreenFade.State.FadeOut(this));
+
         Debug.Log("Quit Game");
         Application.Quit();
     }
@@ -77,6 +95,8 @@ public class LevelLoader : MonoBehaviour
 
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
+        isLoading = true;// bloqueamos una posible segunda carga
+
         OnLoadStart?.Invoke();
 
         //RESET VISUAL INMEDIATO
@@ -138,14 +158,19 @@ public class LevelLoader : MonoBehaviour
         OnAsyncLoadEnd?.Invoke();
 
         // Optional delay para transición de animación/fade
-        yield return new WaitForSeconds(LoadingExtraDuration);
+        yield return new WaitForSecondsRealtime(LoadingExtraDuration);
 
         // Fade out canvas de loading
         if (loadingCanvasGroup)
             yield return StartCoroutine(FadeCanvas(1f, 0f, fadeLoadingDuration));
 
+        if (ControllerManager.state != null && ControllerManager.state.isPaused)
+            ControllerManager.state.PauseGame(false);
+
         // Activamos la escena
         asyncLoad.allowSceneActivation = true;
+
+        isLoading = false;// ya no se esta cargando nivel
 
         // Esperamos un frame para que se inicie la nueva escena y LevelStarter tome control
         yield return null;

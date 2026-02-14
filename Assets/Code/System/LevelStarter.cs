@@ -19,6 +19,7 @@ public class LevelStarter : MonoBehaviour
     [Header("Other Global Options")]
     public bool updateControllerDiviceDetection = true;
     public bool unlockControlsOnFadeEnd = true;
+    public bool resetUISoundManagerState = true;
 
     private IEnumerator Start()
     {
@@ -26,6 +27,9 @@ public class LevelStarter : MonoBehaviour
 
         if (updateControllerDiviceDetection)
             UpdateControllerDiviceDetection();
+
+        if (resetUISoundManagerState)
+            ResetUISoundManager();
 
         if (onLevelStartEventEnabled)
             OnStartLevel();
@@ -83,6 +87,14 @@ public class LevelStarter : MonoBehaviour
             ControllerManager.state.DiviceChangedFunction();
         else
             Debug.LogWarning("ControllerManager no existe. No se puede actualizar detección de dispositivos.");
+    }
+
+    public void ResetUISoundManager()
+    {
+        if (ControllerManager.state != null)
+            ControllerManager.state.ResetUISoundManager();
+        else
+            Debug.LogWarning("ControllerManager no existe. No se puede actualizar el UISoundManager.");
     }
 
     /// <summary>
