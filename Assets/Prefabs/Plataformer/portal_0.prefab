@@ -10260,22 +10260,10 @@ MonoBehaviour:
   EventToCall:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ControllerManager, Assembly-CSharp
-        m_MethodName: LockControls
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ScreenFader, Assembly-CSharp
-        m_MethodName: FadeOut
-        m_Mode: 1
+      - m_Target: {fileID: 5753479977794370231}
+        m_TargetAssemblyTypeName: UnityEngine.BoxCollider2D, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -10456,3 +10444,8 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!61 &5753479977794370231 stripped
+BoxCollider2D:
+  m_CorrespondingSourceObject: {fileID: 3562573504935987775, guid: 1da515a4c47222e4b8837983479909b3, type: 3}
+  m_PrefabInstance: {fileID: 9126749378662166664}
+  m_PrefabAsset: {fileID: 0}

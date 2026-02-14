@@ -15,11 +15,11 @@ revisar en especial el sonido ambiental del portal y chekpoint
 ----------------------------------------------------------------
 Controles Tactiles
 
--ajustar mas el recorrido del análogo, se vuelve molesto y 
+Arreglado -ajustar mas el recorrido del análogo, se vuelve molesto y 
 difícil hacer saltos largos porque hay que arrastrar al máximo 
 el análogo
 
--Ajustar que tarde menos en dejarte usar el análogo cuando 
+Descartado -Ajustar que tarde menos en dejarte usar el análogo cuando 
 comienza el nivel
 
 -Agregar opciones para ajustar sensibilidad del análogo o 

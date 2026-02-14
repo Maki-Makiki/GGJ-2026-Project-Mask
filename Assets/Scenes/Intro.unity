@@ -425,6 +425,7 @@ MonoBehaviour:
         m_CallState: 2
   updateControllerDiviceDetection: 1
   unlockControlsOnFadeEnd: 1
+  resetUISoundManagerState: 1
 --- !u!4 &1708485797
 Transform:
   m_ObjectHideFlags: 0

@@ -21,7 +21,8 @@ public class PlayerColliderAction : MonoBehaviour
                 SceneManager.LoadScene(Trigger.gameObject.name.Split(" | ")[1]);
 
             if (Trigger.gameObject.tag == "Event")
-                Trigger.gameObject.GetComponent<EventCaller>().CallEvent();
+                playerTeleport.LoadLevelNow(Trigger.gameObject);
+                //Trigger.gameObject.GetComponent<EventCaller>().CallEvent();
 
             if (Trigger.gameObject.tag == "Dead")
                 playerTeleport.RespawnPlayerNow();

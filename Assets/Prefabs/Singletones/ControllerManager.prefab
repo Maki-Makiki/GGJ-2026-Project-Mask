@@ -10342,6 +10342,7 @@ MonoBehaviour:
   isPaused: 0
   BlockedControllers: 1
   uISoundManager: {fileID: 1319042224376377750}
+  TouchAction: Touch
   enableDebug: 0
   consoleText: {fileID: 8156837172642832801}
   consoleLines: []
